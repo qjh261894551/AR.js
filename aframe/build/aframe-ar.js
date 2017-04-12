@@ -1391,7 +1391,6 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 	*/
 	ARController.prototype.process = function(image) {
 		this.detectMarker(image);
-
 		var markerNum = this.getMarkerNum();
 		var k,o;
 		for (k in this.patternMarkers) {
@@ -2248,6 +2247,8 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		}, 1);
 	};
 
+	var mytest = 0;
+	//本函数用于获取每帧的图像
 	ARController.prototype._copyImageToHeap = function(image) {
 		if (!image) {
 			image = this.image;
@@ -2265,8 +2266,17 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		}
 
 		var imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-		var data = imageData.data;
+		var data = imageData.data;//获取每帧的颜色信息
 
+		if (mytest == 100) {
+			// console.log(data);
+			var mysrc = this.canvas.toDataURL('image/png');//得到截图BASE64文件
+			// console.log(mysrc);
+			var child=document.getElementById("mytestdiv");
+			child.append("nihao");
+			console.log(child);
+		}
+		mytest++;
 		if (this.dataHeap) {
 			this.dataHeap.set( data );
 			return true;
