@@ -5,10 +5,12 @@ var THREEx = THREEx || {}
  * - cloakHeight
  * - cloakSegmentsHeight
  * - remove all mentions of cache, for cloak
+ //遮挡物，从缓存中移除所有方法
  */
 THREEx.ArMarkerCloak = function(videoTexture){
+		alert("ArMarkerCloak");
         var updateInShaderEnabled = true
-
+        //创建遮挡物，
         // build cloakMesh
         // TODO if webgl2 use repeat warp, and not multi segment, this will reduce the geometry to draw
 	var geometry = new THREE.PlaneGeometry(1.3+0.25,1.85+0.25, 1, 8).translate(0,-0.3,0)
@@ -28,7 +30,7 @@ THREEx.ArMarkerCloak = function(videoTexture){
 			updateInShaderEnabled: updateInShaderEnabled ? 1 : 0,
 		}
 	});
-
+	//遮罩网孔
 	var cloakMesh = new THREE.Mesh( geometry, material );
         cloakMesh.rotation.x = -Math.PI/2
 	this.object3d = cloakMesh
@@ -117,6 +119,7 @@ THREEx.ArMarkerCloak = function(videoTexture){
 
         // update cloakMesh
 	function updateUvs(modelViewMatrix, cameraProjectionMatrix){
+		alert("updateUvs");
 		var transformedUv = new THREE.Vector3()
                 originalsFaceVertexUvs[0].forEach(function(faceVertexUvs, faceIndex){
                         faceVertexUvs.forEach(function(originalUv, uvIndex){
@@ -144,6 +147,7 @@ THREEx.ArMarkerCloak = function(videoTexture){
 
         // update orthoMesh
 	function updateOrtho(modelViewMatrix, cameraProjectionMatrix){
+		alert("updateOrtho");
 		// compute transformedUvs
 		var transformedUvs = []
 		originalOrthoVertices.forEach(function(originalOrthoVertices, index){
@@ -224,6 +228,7 @@ THREEx.ArMarkerCloak.fragmentShader = '\n'+
 var THREEx = THREEx || {}
 
 THREEx.ArMarkerControls = function(context, object3d, parameters){
+	alert("ArMarkerControls");
 	var _this = this
 	this.context = context
 	// handle default parameters
@@ -240,7 +245,7 @@ THREEx.ArMarkerControls = function(context, object3d, parameters){
 		changeMatrixMode : parameters.changeMatrixMode !== undefined ? parameters.changeMatrixMode : 'modelViewMatrix',
 	}
 
-	// sanity check
+	// sanity check 可用性测试
 	var possibleValues = ['pattern', 'barcode', 'unknown' ]
 	console.assert(possibleValues.indexOf(this.parameters.type) !== -1, 'illegal value', this.parameters.type)
 	var possibleValues = ['modelViewMatrix', 'cameraTransformMatrix' ]
@@ -269,10 +274,11 @@ THREEx.ArMarkerControls = function(context, object3d, parameters){
 		_this._postInit()
 	}, 1000/50)
 	return
-
 }
 
 THREEx.ArMarkerControls.prototype._postInit = function(){
+	alert("ArMarkerControls.prototype._postInit");
+
 	var _this = this
 	var markerObject3D = this.object3d;
 	// check if arController is init
@@ -349,6 +355,7 @@ THREEx.ArMarkerControls.prototype._postInit = function(){
 Object.assign( THREEx.ArMarkerControls.prototype, THREE.EventDispatcher.prototype );
 
 THREEx.ArMarkerControls.prototype.dispose = function(){
+	alert("ArMarkerControls.prototype.dispose");
 	this.context.removeMarker(this)
 
 	// TODO remove the event listener if needed
@@ -357,6 +364,7 @@ THREEx.ArMarkerControls.prototype.dispose = function(){
 var THREEx = THREEx || {}
 
 THREEx.ArToolkitContext = function(parameters){
+	alert("ArToolkitContext");
 	var _this = this
 	
 	_this._updatedAt = null
@@ -404,14 +412,14 @@ THREEx.ArToolkitContext.REVISION = '1.0.1-dev'
  * return the projection matrix
  */
 THREEx.ArToolkitContext.prototype.getProjectionMatrix = function(srcElement){
+	alert("getProjectionMatrix");
 	console.assert(this.arController, 'arController MUST be initialized to call this function')
 	// get projectionMatrixArr from artoolkit
 	var projectionMatrixArr = this.arController.getCameraMatrix();
 	var projectionMatrix = new THREE.Matrix4().fromArray(projectionMatrixArr)
-		
+	
 	// apply context._axisTransformMatrix - change artoolkit axis to match usual webgl one
 	projectionMatrix.multiply(this._projectionAxisTransformMatrix)
-	
 	// return the result
 	return projectionMatrix
 }
@@ -420,6 +428,7 @@ THREEx.ArToolkitContext.prototype.getProjectionMatrix = function(srcElement){
 //		Code Separator
 //////////////////////////////////////////////////////////////////////////////
 THREEx.ArToolkitContext.prototype.init = function(onCompleted){
+	alert("THREEx.ArToolkitContext.prototype.init");
         var _this = this
 	var canvasWidth = this.parameters.canvasWidth
 	var canvasHeight = this.parameters.canvasHeight
@@ -481,11 +490,13 @@ THREEx.ArToolkitContext.prototype.init = function(onCompleted){
 //          Code Separator
 ////////////////////////////////////////////////////////////////////////////////
 THREEx.ArToolkitContext.prototype.update = function(srcElement){
+	alert("THREEx.ArToolkitContext.prototype.update");
 	// be sure arController is fully initialized
         var arController = this.arController
         if (!arController) return false;
 
 	// honor this.parameters.maxDetectionRate
+
 	var present = performance.now()
 	if( this._updatedAt !== null && present - this._updatedAt < 1000/this.parameters.maxDetectionRate ){
 		return false
@@ -515,6 +526,7 @@ THREEx.ArToolkitContext.prototype.update = function(srcElement){
 		markerControls.object3d.visible = false
 	})
 
+	//video标签，宽高长等
 	// process this frame
 	arController.process(srcElement)
 
@@ -526,11 +538,13 @@ THREEx.ArToolkitContext.prototype.update = function(srcElement){
 //          Code Separator
 ////////////////////////////////////////////////////////////////////////////////
 THREEx.ArToolkitContext.prototype.addMarker = function(arMarkerControls){
+	alert("THREEx.ArToolkitContext.prototype.addMarker");
 	console.assert(arMarkerControls instanceof THREEx.ArMarkerControls)
 	this._arMarkersControls.push(arMarkerControls)
 }
 
 THREEx.ArToolkitContext.prototype.removeMarker = function(arMarkerControls){
+	alert("THREEx.ArToolkitContext.prototype.removeMarker");
 	console.assert(arMarkerControls instanceof THREEx.ArMarkerControls)
 	// console.log('remove marker for', arMarkerControls)
 	var index = this.arMarkerControlss.indexOf(artoolkitMarker);
@@ -554,6 +568,7 @@ THREEx.ArToolkitProfile = function(){
 
 
 THREEx.ArToolkitProfile.prototype._guessPerformanceLabel = function() {
+	alert("THREEx.ArToolkitContext.prototype._guessPerformanceLabel");
 	var isMobile = navigator.userAgent.match(/Android/i)
 			|| navigator.userAgent.match(/webOS/i)
 			|| navigator.userAgent.match(/iPhone/i)
@@ -576,6 +591,7 @@ THREEx.ArToolkitProfile.prototype._guessPerformanceLabel = function() {
  * reset all parameters
  */
 THREEx.ArToolkitProfile.prototype.reset = function () {
+	alert("THREEx.ArToolkitContext.prototype.reset");
 	this.sourceParameters = {
 		// to read from the webcam 
 		sourceType : 'webcam',
@@ -599,6 +615,7 @@ THREEx.ArToolkitProfile.prototype.reset = function () {
 
 
 THREEx.ArToolkitProfile.prototype.performance = function(label) {
+	alert("THREEx.ArToolkitProfile.prototype.performance");
 	if( label === 'default' ){
 		label = this._guessPerformanceLabel()
 	}
@@ -632,6 +649,7 @@ THREEx.ArToolkitProfile.prototype.performance = function(label) {
 //		Marker
 //////////////////////////////////////////////////////////////////////////////
 THREEx.ArToolkitProfile.prototype.kanjiMarker = function () {
+	alert("THREEx.ArToolkitProfile.prototype.kanjiMarker");
 	this.contextParameters.detectionMode = 'mono'
 
 	this.defaultMarkerParameters.type = 'pattern'
@@ -640,6 +658,7 @@ THREEx.ArToolkitProfile.prototype.kanjiMarker = function () {
 }
 
 THREEx.ArToolkitProfile.prototype.hiroMarker = function () {
+	alert("THREEx.ArToolkitProfile.prototype.hiroMarker");
 	this.contextParameters.detectionMode = 'mono'
 
 	this.defaultMarkerParameters.type = 'pattern'
@@ -651,6 +670,7 @@ THREEx.ArToolkitProfile.prototype.hiroMarker = function () {
 //		Source
 //////////////////////////////////////////////////////////////////////////////
 THREEx.ArToolkitProfile.prototype.sourceWebcam = function () {
+	alert("THREEx.ArToolkitProfile.prototype.sourceWebcam");
 	this.sourceParameters.sourceType = 'webcam'
 	delete this.sourceParameters.sourceUrl
 	return this
@@ -658,12 +678,14 @@ THREEx.ArToolkitProfile.prototype.sourceWebcam = function () {
 
 
 THREEx.ArToolkitProfile.prototype.sourceVideo = function (url) {
+	alert("THREEx.ArToolkitProfile.prototype.sourceVideo");
 	this.sourceParameters.sourceType = 'video'
 	this.sourceParameters.sourceUrl = url
 	return this
 }
 
 THREEx.ArToolkitProfile.prototype.sourceImage = function (url) {
+	alert("THREEx.ArToolkitProfile.prototype.sourceImage");
 	this.sourceParameters.sourceType = 'image'
 	this.sourceParameters.sourceUrl = url
 	return this
@@ -671,6 +693,7 @@ THREEx.ArToolkitProfile.prototype.sourceImage = function (url) {
 var THREEx = THREEx || {}
 
 THREEx.ArToolkitSource = function(parameters){	
+	alert("THREEx.ArToolkitSource");
 	// handle default parameters
 	this.parameters = {
 		// type of source - ['webcam', 'image', 'video']
@@ -694,6 +717,7 @@ THREEx.ArToolkitSource = function(parameters){
 //		Code Separator
 //////////////////////////////////////////////////////////////////////////////
 THREEx.ArToolkitSource.prototype.init = function(onReady){
+	alert("THREEx.ArToolkitSource.prototype.init");
 	var _this = this
 
         if( this.parameters.sourceType === 'image' ){
@@ -729,6 +753,7 @@ THREEx.ArToolkitSource.prototype.init = function(onReady){
 
 
 THREEx.ArToolkitSource.prototype._initSourceImage = function(onReady) {
+	alert("THREEx.ArToolkitSource.prototype._initSourceImage");
 	// TODO make it static
         var domElement = document.createElement('img')
 	domElement.src = this.parameters.sourceUrl
@@ -754,6 +779,7 @@ THREEx.ArToolkitSource.prototype._initSourceImage = function(onReady) {
 
 
 THREEx.ArToolkitSource.prototype._initSourceVideo = function(onReady) {
+	alert("THREEx.ArToolkitSource.prototype._initSourceVideo");
 	// TODO make it static
 	var domElement = document.createElement('video');
 	domElement.src = this.parameters.sourceUrl
@@ -792,6 +818,7 @@ THREEx.ArToolkitSource.prototype._initSourceVideo = function(onReady) {
 
 
 THREEx.ArToolkitSource.prototype._initSourceWebcam = function(onReady) {
+	alert("THREEx.ArToolkitSource.prototype._initSourceWebcam");
 	var _this = this
 	// TODO make it static
 	navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
@@ -865,6 +892,7 @@ THREEx.ArToolkitSource.prototype._initSourceWebcam = function(onReady) {
 ////////////////////////////////////////////////////////////////////////////////
 
 THREEx.ArToolkitSource.prototype.onResize = function(rendererDomElement){
+	alert("THREEx.ArToolkitSource.prototype.onResize");
 	var screenWidth = window.innerWidth
 	var screenHeight = window.innerHeight
 
@@ -916,6 +944,7 @@ THREEx.ArToolkitSource.prototype.onResize = function(rendererDomElement){
 var THREEx = THREEx || {}
 
 THREEx.ArVideoInWebgl = function(videoTexture){	
+	alert("THREEx.ArVideoInWebgl");
 	var _this = this
 	
 	//////////////////////////////////////////////////////////////////////////////
@@ -1149,7 +1178,7 @@ AFRAME.registerSystem('artoolkit', {
                 // var projectionMatrixArr = this.arToolkitContext.arController.getCameraMatrix();
                 // this.sceneEl.camera.projectionMatrix.fromArray(projectionMatrixArr);
 
-		// copy projection matrix to camera
+		// copy projection matrix to camera 拷贝投射矩阵到相机
 		if( this.arToolkitContext.arController !== null ){
 			this.sceneEl.camera.projectionMatrix.copy( this.arToolkitContext.getProjectionMatrix() );
 		}
@@ -1162,7 +1191,7 @@ AFRAME.registerSystem('artoolkit', {
 //////////////////////////////////////////////////////////////////////////////
 //		Code Separator
 //////////////////////////////////////////////////////////////////////////////
-AFRAME.registerComponent('artoolkitmarker', {
+AFRAME.registerComponent('artoolkitmarker', {//注册组件
         dependencies: ['artoolkit'],
 	schema: {
 		size: {
@@ -1222,7 +1251,7 @@ AFRAME.registerComponent('artoolkitmarker', {
 //////////////////////////////////////////////////////////////////////////////
 
 AFRAME.registerPrimitive('a-marker', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
-        defaultComponents: {
+        defaultComponents: {//注册基准
                 artoolkitmarker: {},
         },
         mappings: {
@@ -1297,7 +1326,8 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@param {number} height The height of the images to process.
 		@param {ARCameraParam | string} camera The ARCameraParam to use for image processing. If this is a string, the ARController treats it as an URL and tries to load it as a ARCameraParam definition file, calling ARController#onload on success. 
 	*/
-	var ARController = function(width, height, camera) {
+	var ARController = function(width, height, camera) {//创建AR的控制器
+		alert("ARController");
 		var id;
 		var w = width, h = height;
 
@@ -1349,7 +1379,8 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 
 		Calling this avoids leaking Emscripten memory, which may be important if you're using multiple ARControllers.
 	*/
-	ARController.prototype.dispose = function() {
+	ARController.prototype.dispose = function() {//处理拆除函数
+		alert("ARController.prototype.dispose");
 		artoolkit.teardown(this.id);
 
 		for (var t in this) {
@@ -1390,6 +1421,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@param {ImageElement | VideoElement} image The image to process [optional]. 
 	*/
 	ARController.prototype.process = function(image) {
+		alert("ARController.prototype.process");
 		this.detectMarker(image);
 		var markerNum = this.getMarkerNum();
 		var k,o;
@@ -1413,7 +1445,6 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			if (markerInfo.idPatt > -1 && (markerInfo.id === markerInfo.idPatt || markerInfo.idMatrix === -1)) {
 				visible = this.trackPatternMarkerId(markerInfo.idPatt);
 				markerType = artoolkit.PATTERN_MARKER;
-
 				if (markerInfo.dir !== markerInfo.dirPatt) {
 					this.setMarkerInfoDir(i, markerInfo.dirPatt);
 				}
@@ -1435,6 +1466,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 
 			visible.inCurrent = true;
 			this.transMatToGLMat(visible.matrix, this.transform_mat);
+
 			this.dispatchEvent({
 				name: 'getMarker',
 				target: this,
@@ -1505,6 +1537,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@return {Object} The marker tracking object.
 	*/
 	ARController.prototype.trackPatternMarkerId = function(id, markerWidth) {
+		alert("ARController.prototype.trackPatternMarkerId");
 		var obj = this.patternMarkers[id];
 		if (!obj) {
 			this.patternMarkers[id] = obj = {
@@ -1533,6 +1566,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@return {Object} The marker tracking object.
 	*/
 	ARController.prototype.trackBarcodeMarkerId = function(id, markerWidth) {
+		alert("ARController.prototype.trackBarcodeMarkerId");
 		var obj = this.barcodeMarkers[id];
 		if (!obj) {
 			this.barcodeMarkers[id] = obj = {
@@ -1554,6 +1588,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@return {number} Number of multimarkers registered.
 	*/
 	ARController.prototype.getMultiMarkerCount = function() {
+		alert("ARController.prototype.getMultiMarkerCount");
 		return artoolkit.getMultiMarkerCount(this.id);
 	};
 
@@ -1564,6 +1599,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@return {number} Number of markers in the multimarker. Negative value indicates failure to find the multimarker.
 	*/
 	ARController.prototype.getMultiMarkerPatternCount = function(multiMarkerId) {
+		alert("ARController.prototype.getMultiMarkerPatternCount");
 		return artoolkit.getMultiMarkerNum(this.id, multiMarkerId);
 	};
 
@@ -1581,6 +1617,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@param {function} callback Callback function to call when an event with the given name is dispatched.
 	*/
 	ARController.prototype.addEventListener = function(name, callback) {
+		alert("ARController.prototype.addEventListener");
        if (!this.listeners[name]) {
 			this.listeners[name] = [];
 		}
@@ -1594,6 +1631,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@param {function} callback Callback function to remove from the listeners of the named event.
 	*/
 	ARController.prototype.removeEventListener = function(name, callback) {
+		alert("ARController.prototype.removeEventListener");
 		if (this.listeners[name]) {
 			var index = this.listeners[name].indexOf(callback);
 			if (index > -1) {
@@ -1608,6 +1646,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@param {Object} event Event to dispatch.
 	*/
 	ARController.prototype.dispatchEvent = function(event) {
+		alert("ARController.prototype.dispatchEvent");
 		var listeners = this.listeners[event.name];
 		if (listeners) {
 			for (var i=0; i<listeners.length; i++) {
@@ -1622,6 +1661,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		The debug canvas is added to document.body.
 	*/
 	ARController.prototype.debugSetup = function() {
+		alert("ARController.prototype.debugSetup");
 		document.body.appendChild(this.canvas)
 		this.setDebugMode(1);
 		this._bwpointer = this.getProcessingImage();
@@ -1637,6 +1677,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@param {function} onError - The error callback. Called with the encountered error if the load fails.
 	*/
 	ARController.prototype.loadMarker = function(markerURL, onSuccess, onError) {
+		alert("ARController.prototype.loadMarker");
 		return artoolkit.addMarker(this.id, markerURL, onSuccess, onError);
 	};
 
@@ -1650,6 +1691,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@param {function} onError - The error callback. Called with the encountered error if the load fails.
 	*/
 	ARController.prototype.loadMultiMarker = function(markerURL, onSuccess, onError) {
+		alert("ARController.prototype.loadMultiMarker");
 		return artoolkit.addMultiMarker(this.id, markerURL, onSuccess, onError);
 	};
 
@@ -1663,6 +1705,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 	 * @return	{Float64Array} The dst array.
 	 */
 	ARController.prototype.getTransMatSquare = function(markerIndex, markerWidth, dst) {
+		alert("ARController.prototype.getTransMatSquare");
 		artoolkit.getTransMatSquare(this.id, markerIndex, markerWidth);
 		dst.set(this.marker_transform_mat);
 		return dst;
@@ -1680,6 +1723,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 	 * @return	{Float64Array} The dst array.
 	 */
 	ARController.prototype.getTransMatSquareCont = function(markerIndex, markerWidth, previousMarkerTransform, dst) {
+		alert("ARController.prototype.getTransMatSquareCont");
 		this.marker_transform_mat.set(previousMarkerTransform)
 		artoolkit.getTransMatSquareCont(this.id, markerIndex, markerWidth);
 		dst.set(this.marker_transform_mat);
@@ -1697,6 +1741,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 	 * @return	{Float64Array} The dst array.
 	 */
 	ARController.prototype.getTransMatMultiSquare = function(multiMarkerId, dst) {
+		alert("ARController.prototype.getTransMatMultiSquare");
 		artoolkit.getTransMatMultiSquare(this.id, multiMarkerId);
 		dst.set(this.marker_transform_mat);
 		return dst;
@@ -1712,6 +1757,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 	 * @return	{Float64Array} The dst array.
 	 */
 	ARController.prototype.getTransMatMultiSquareRobust = function(multiMarkerId, dst) {
+		alert("ARController.prototype.getTransMatMultiSquareRobust");
 		artoolkit.getTransMatMultiSquare(this.id, multiMarkerId);
 		dst.set(this.marker_transform_mat);
 		return dst;
@@ -1728,6 +1774,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@param {number} scale The scale for the transform.
 	*/ 
 	ARController.prototype.transMatToGLMat = function(transMat, glMat, scale) {
+		alert("ARController.prototype.transMatToGLMat");
 		glMat[0 + 0*4] = transMat[0]; // R1C1
 		glMat[0 + 1*4] = transMat[1]; // R1C2
 		glMat[0 + 2*4] = transMat[2];
@@ -1768,6 +1815,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			A result of 0 does not however, imply any markers were detected.
 	*/
 	ARController.prototype.detectMarker = function(image) {
+		alert("ARController.prototype.detectMarker");
 		if (this._copyImageToHeap(image)) {
 			return artoolkit.detectMarker(this.id);
 		}
@@ -1782,6 +1830,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
         	arGetDetectedMarkerCount, but the current name lives on for historical reasons.
     */
 	ARController.prototype.getMarkerNum = function() {
+		alert("ARController.prototype.getMarkerNum");
 		return artoolkit.getMarkerNum(this.id);
 	};
 
@@ -1818,6 +1867,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@returns {Object} The markerInfo struct.
 	*/
 	ARController.prototype.getMarker = function(markerIndex) {
+		alert("ARController.prototype.getMarker");
 		if (0 === artoolkit.getMarker(this.id, markerIndex)) {
 			return artoolkit.markerInfo;
 		}
@@ -1835,6 +1885,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@param {number} markerIndex The index of the marker to edit.
 	*/
 	ARController.prototype.setMarkerInfoVertex = function(markerIndex, vertexData) {
+		alert("ARController.prototype.setMarkerInfoVertex");
 		for (var i=0; i<vertexData.length; i++) {
 			this.marker_transform_mat[i*2+0] = vertexData[i][0];
 			this.marker_transform_mat[i*2+1] = vertexData[i][1];
@@ -1849,6 +1900,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@return {Object} The new copy of the marker info.
 	*/
 	ARController.prototype.cloneMarkerInfo = function(markerInfo) {
+		alert("ARController.prototype.cloneMarkerInfo");
 		return JSON.parse(JSON.stringify(markerInfo));
 	};
 
@@ -1872,6 +1924,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@returns {Object} The markerInfo struct.
 	*/
 	ARController.prototype.getMultiEachMarker = function(multiMarkerId, markerIndex) {
+		alert("ARController.prototype.getMultiEachMarker");
 		if (0 === artoolkit.getMultiEachMarker(this.id, multiMarkerId, markerIndex)) {
 			return artoolkit.multiEachMarkerInfo;
 		}
@@ -1887,6 +1940,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@return {Float64Array} The 16-element WebGL transformation matrix used by the ARController.
 	*/
 	ARController.prototype.getTransformationMatrix = function() {
+		alert("ARController.prototype.getTransformationMatrix");
 		return this.transform_mat;
 	};
 
@@ -1896,6 +1950,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 	 * @return {Float64Array} The 16-element WebGL camera matrix for the ARController camera parameters.
 	 */
 	ARController.prototype.getCameraMatrix = function() {
+		alert("ARController.prototype.getCameraMatrix");
 		return this.camera_mat;
 	};
 
@@ -1906,6 +1961,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@return {Float64Array} The 12-element 3x4 row-major marker transformation matrix used by ARToolKit.
 	*/
 	ARController.prototype.getMarkerTransformationMatrix = function() {
+		alert("ARController.prototype.getMarkerTransformationMatrix");
 		return this.marker_transform_mat;
 	};
 
@@ -1920,6 +1976,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 	 * @see				getDebugMode()
 	 */
 	ARController.prototype.setDebugMode = function(mode) {
+		alert("ARController.prototype.setDebugMode");
 		return artoolkit.setDebugMode(this.id, mode);
 	};
 
@@ -1929,6 +1986,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 	 * @see				setDebugMode()
 	 */
 	ARController.prototype.getDebugMode = function() {
+		alert("ARController.prototype.getDebugMode");
 		return artoolkit.getDebugMode(this.id);
 	};
 
@@ -1938,6 +1996,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@return {number} HEAP offset to the debug processing image.
 	*/
 	ARController.prototype.getProcessingImage = function() {
+		alert("ARController.prototype.getProcessingImage");
 		return artoolkit.getProcessingImage(this.id);
 	}
 
@@ -1947,30 +2006,37 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@param 
 	*/
 	ARController.prototype.setLogLevel = function(mode) {
+		alert("ARController.prototype.setLogLevel");
 		return artoolkit.setLogLevel(mode);
 	};
 
 	ARController.prototype.getLogLevel = function() {
+		alert("ARController.prototype.getLogLevel");
 		return artoolkit.getLogLevel();
 	};
 
 	ARController.prototype.setMarkerInfoDir = function(markerIndex, dir) {
+		alert("ARController.prototype.setMarkerInfoDir");
 		return artoolkit.setMarkerInfoDir(this.id, markerIndex, dir);
 	};
 
 	ARController.prototype.setProjectionNearPlane = function(value) {
+		alert("ARController.prototype.setProjectionNearPlane");
 		return artoolkit.setProjectionNearPlane(this.id, value);
 	};
 
 	ARController.prototype.getProjectionNearPlane = function() {
+		alert("ARController.prototype.getProjectionNearPlane");
 		return artoolkit.getProjectionNearPlane(this.id);
 	};
 
 	ARController.prototype.setProjectionFarPlane = function(value) {
+		alert("ARController.prototype.setProjectionFarPlane");
 		return artoolkit.setProjectionFarPlane(this.id, value);
 	};
 
 	ARController.prototype.getProjectionFarPlane = function() {
+		alert("ARController.prototype.getProjectionFarPlane");
 		return artoolkit.getProjectionFarPlane(this.id);
 	};
 
@@ -1986,6 +2052,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 	        AR_LABELING_THRESH_MODE_AUTO_BRACKETING
 	 */
  	ARController.prototype.setThresholdMode = function(mode) {
+ 		alert("ARController.prototype.setThresholdMode");
 		return artoolkit.setThresholdMode(this.id, mode);
 	};
 
@@ -1995,6 +2062,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 	 * @see				getVideoThresholdMode()
 	 */
 	ARController.prototype.getThresholdMode = function() {
+		alert("ARController.prototype.getThresholdMode");
 		return artoolkit.getThresholdMode(this.id);
 	};
 
@@ -2023,6 +2091,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@param {number}     thresh An integer in the range [0,255] (inclusive).
 	*/
 	ARController.prototype.setThreshold = function(threshold) {
+		alert("ARController.prototype.setThreshold");
 		return artoolkit.setThreshold(this.id, threshold);
 	};
 
@@ -2042,6 +2111,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 	    @return {number} The current threshold value.
 	*/
 	ARController.prototype.getThreshold = function() {
+		alert("ARController.prototype.getThreshold");
 		return artoolkit.getThreshold(this.id);
 	};
 
@@ -2068,6 +2138,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			The default mode is AR_TEMPLATE_MATCHING_COLOR.
 	*/
 	ARController.prototype.setPatternDetectionMode = function(value) {
+		alert("ARController.prototype.setPatternDetectionMode");
 		return artoolkit.setPatternDetectionMode(this.id, value);
 	};
 
@@ -2077,6 +2148,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@return {number} The current pattern detection mode.
 	*/
 	ARController.prototype.getPatternDetectionMode = function() {
+		alert("ARController.prototype.getPatternDetectionMode");
 		return artoolkit.getPatternDetectionMode(this.id);
 	};
 
@@ -2100,6 +2172,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 	        The default mode is AR_MATRIX_CODE_3x3.
 	*/
 	ARController.prototype.setMatrixCodeType = function(value) {
+		alert("ARController.prototype.setMatrixCodeType");
 		return artoolkit.setMatrixCodeType(this.id, value);
 	};
 
@@ -2109,6 +2182,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		@return {number} The current matrix code type.
 	*/
 	ARController.prototype.getMatrixCodeType = function() {
+		alert("ARController.prototype.getMatrixCodeType");
 		return artoolkit.getMatrixCodeType(this.id);
 	};
 
@@ -2267,9 +2341,9 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 
 		var imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
 		var data = imageData.data;//获取每帧的颜色信息
-
+		var red = data[4];
 		if (mytest == 100) {
-			// console.log(data);
+			console.log(red);  
 			var mysrc = this.canvas.toDataURL('image/png');//得到截图BASE64文件
 			// console.log(mysrc);
 			var child=document.getElementById("mytestdiv");
