@@ -2296,16 +2296,26 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 	// private
 	var currentImageData = new Array();//用于存储当前图像数据
 	var mylocalSQL = new Array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);//用于存储当前图像数据
+
+
+	function getQueryString(name) {//取URL参数  你要得到userid 就传userid
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]); return null;
+    }
+
+
 	ARController.prototype._initialize = function() {
 		this.id = artoolkit.setup(this.canvas.width, this.canvas.height, this.cameraParam.id);
 
 		var params = artoolkit.frameMalloc;
 		this.framepointer = params.framepointer;
 		this.framesize = params.framesize;
+		// alert(getQueryString("name"));//获取URL的GET数据
 
 		this.dataHeap = new Uint8Array(Module.HEAPU8.buffer, this.framepointer, this.framesize);
 
-
+		
 		var child=document.getElementById("btn1");
 			console.log(child);
 			child.addEventListener("click", function() {
@@ -2330,6 +2340,8 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			});
 		}, 1);
 	};
+
+	
 
 	function uploadImageColorInfo(data){
 		var count = data.length/4;
@@ -2398,6 +2410,15 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 
 		mylocalSQL = new Array(redRate1,greenRate1,blueRate1,rgbRate1,redRate2,greenRate2,blueRate2,rgbRate2,redRate3,greenRate3,blueRate3,rgbRate3,redRate,greenRate,blueRate,rgbRate);
 		//此处通过上传JSON至对应后台API，来实现
+
+		$.ajax({
+    		url: "https://tcc.taobao.com/cc/json/mobile_tel_segment.htm?tel=18058762213",
+    		type: "POST",
+    		dataType: 'JSONP',
+    		success: function(result){
+       		 console.log(result);
+    		}
+		});
 
 	}
 
