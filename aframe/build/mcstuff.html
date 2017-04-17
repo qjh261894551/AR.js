@@ -1,0 +1,16 @@
+<!-- Augmented Reality on the Web in 10 lines of html! https://github.com/jeromeetienne/ar.js --> 
+<script src="https://weixin.memorecool.cn/aframe.min.js"></script>
+<script src="https://weixin.memorecool.cn/aframe-mcar.js"></script>
+<script>THREEx.ArToolkitContext.baseURL = 'https://rawgit.com/jeromeetienne/ar.js/master/three.js/'</script>
+<body style='margin : 0px; overflow: hidden;'>
+	<button type="submit" id="btn1" style="
+    margin-top: 23rem;
+    margin-left: 30rem;
+"> 保存并上传 </button>
+	<a-scene embedded artoolkit='sourceType: webcam;'>
+		<a-box position='0 0.5 0' material='opacity: 0.5;'></a-box>
+		<a-marker-camera preset='hiro'></a-marker-camera>
+	</a-scene>
+	<img class="mytest" src="">
+	<div id="mytestdiv"></div>
+</body>
