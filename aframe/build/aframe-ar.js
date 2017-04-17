@@ -2363,6 +2363,34 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		var redTotal = 0;
 		var greenTotal = 0;
 		var blueTotal = 0;
+
+		var redTotal1 = 0;
+		var greenTotal1 = 0;
+		var blueTotal1 = 0;
+
+		var redTotal2 = 0;
+		var greenTotal2 = 0;
+		var blueTotal2 = 0;
+
+		var redTotal3 = 0;
+		var greenTotal3 = 0;
+		var blueTotal3 = 0;
+
+		for (var i=0; i<count/3; i++) {
+			redTotal1 += data[i*4];
+			greenTotal1 += data[1+i*4];
+			blueTotal1 += data[2+i*4];
+		}
+		for (var i=count/3; i<count*2/3; i++) {
+			redTotal2 += data[i*4];
+			greenTotal2 += data[1+i*4];
+			blueTotal2 += data[2+i*4];
+		}
+		for (var i=count*2/3; i<count; i++) {
+			redTotal3 += data[i*4];
+			greenTotal3 += data[1+i*4];
+			blueTotal3 += data[2+i*4];
+		}
 		for (var i=0; i<count; i++) {
 			redTotal += data[i*4];
 			greenTotal += data[1+i*4];
@@ -2391,16 +2419,16 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
     	// alert(Math.abs(greenRate-0.5521542202818628));
 	    // alert(Math.abs(blueRate-0.5477897390727124));
 	    // alert(Math.abs(redRate-1.6585723422181373));
-    	if (Math.abs(redRate-0.49060068)>0.05) {
+    	if (Math.abs(redRate-0.57928799)>0.05) {
     		return false;
     	}
-    	if (Math.abs(greenRate-0.457966082005)>0.05) {
+    	if (Math.abs(greenRate-0.55577233966)>0.05) {
     		return false;
     	}
-    	if (Math.abs(blueRate-0.437504889195)>0.05) {
+    	if (Math.abs(blueRate-0.526289573)>0.05) {
     		return false;
     	}
-    	if (Math.abs(rgbRate-1.3860716528799)>0.1) {
+    	if (Math.abs(rgbRate-1.66134990298)>0.1) {
     		return false;
     	}
     	return true;
