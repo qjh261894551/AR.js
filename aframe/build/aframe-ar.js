@@ -2350,7 +2350,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		// 	child.append("nihao");
 		// 	console.log(child);
 		// }
-		mytest++;
+		// mytest++;
 		if (this.dataHeap) {
 			this.dataHeap.set( data );
 			return true;
@@ -2376,21 +2376,41 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		var greenTotal3 = 0;
 		var blueTotal3 = 0;
 
+		//上部
 		for (var i=0; i<count/3; i++) {
 			redTotal1 += data[i*4];
 			greenTotal1 += data[1+i*4];
 			blueTotal1 += data[2+i*4];
 		}
+		
+		//获取各颜色的比例
+		var redRate1 = redTotal1/(255*count/3);
+		var greenRate1 = greenTotal1/(255*count/3);
+		var blueRate1 = blueTotal1/(255*count/3);
+		var rgbRate1 = redRate1+greenRate1+blueRate1;
+		//中部
 		for (var i=count/3; i<count*2/3; i++) {
 			redTotal2 += data[i*4];
 			greenTotal2 += data[1+i*4];
 			blueTotal2 += data[2+i*4];
 		}
+		//获取各颜色的比例
+		var redRate2 = redTotal2/(255*count);
+		var greenRate2 = greenTotal2/(255*count/3);
+		var blueRate2 = blueTotal2/(255*count/3);
+		var rgbRate2 = redRate2+greenRate2+blueRate2;
+		//下部
 		for (var i=count*2/3; i<count; i++) {
 			redTotal3 += data[i*4];
 			greenTotal3 += data[1+i*4];
 			blueTotal3 += data[2+i*4];
 		}
+		//获取各颜色的比例
+		var redRate3 = redTotal3/(255*count/3);
+		var greenRate3 = greenTotal3/(255*count/3);
+		var blueRate3 = blueTotal3/(255*count/3);
+		var rgbRate3 = redRate3+greenRate3+blueRate3;
+		//全部
 		for (var i=0; i<count; i++) {
 			redTotal += data[i*4];
 			greenTotal += data[1+i*4];
@@ -2401,34 +2421,93 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		var greenRate = greenTotal/(255*count);
 		var blueRate = blueTotal/(255*count);
 		var rgbRate = redRate+greenRate+blueRate;
+
+
+		var myRates = new Array(redRate1,greenRate1,blueRate1,rgbRate1,redRate2,greenRate2,blueRate2,rgbRate2,redRate3,greenRate3,blueRate3,rgbRate3,redRate,greenRate,blueRate,rgbRate);
+		//增加堆栈开判断摄像头是否已稳定
 		// console.log(redRate);
 		// console.log(greenRate);
 		// console.log(blueRate);
 		// console.log(rgbRate);
-		// alert(redRate);
-		// alert(greenRate);
-		// alert(blueRate);
-		// alert(rgbRate);
-		if (checkFromWeb(redRate,greenRate,blueRate,rgbRate)) {
+		// alert(redRate1);//0.586383846
+		// alert(greenRate1);//0.6025065
+		// alert(blueRate1);//0.6034276
+		// alert(rgbRate1);//1.7923179764
+		// alert(redRate2);//0.17843709
+		// alert(greenRate2);//0.51216375613
+		// alert(blueRate2);//0.431055798
+		// alert(rgbRate2);//1.121657
+		// alert(redRate3);//0.4327
+		// alert(greenRate3);//0.387906
+		// alert(blueRate3);//0.35541
+		// alert(rgbRate3);//1.176
+		// alert(redRate);//0.51813
+		// alert(greenRate);//0.5009
+		// alert(blueRate);//0.4633
+		// alert(rgbRate);//1.4823
+		if (checkFromWeb(myRates)) {
 			alert("匹配成功");
 		}
     }
                                                                                                        
-    function checkFromWeb(redRate,greenRate,blueRate,rgbRate){
+    function checkFromWeb(myRates){
     	//再做几个判断，增加各1/3的数据进行判断。
     	// alert(Math.abs(greenRate-0.5521542202818628));
 	    // alert(Math.abs(blueRate-0.5477897390727124));
 	    // alert(Math.abs(redRate-1.6585723422181373));
-    	if (Math.abs(redRate-0.57928799)>0.05) {
+	    //上部
+	    if (Math.abs(myRates[0]-0.586383846)>0.1) {
     		return false;
     	}
-    	if (Math.abs(greenRate-0.55577233966)>0.05) {
+    	if (Math.abs(myRates[1]-0.6025065)>0.1) {
     		return false;
     	}
-    	if (Math.abs(blueRate-0.526289573)>0.05) {
+    	if (Math.abs(myRates[2]-0.6034276)>0.1) {
     		return false;
     	}
-    	if (Math.abs(rgbRate-1.66134990298)>0.1) {
+    	if (Math.abs(myRates[3]-1.7923179764)>0.2) {
+    		return false;
+    	}
+
+    	//中部
+    	if (Math.abs(myRates[4]-0.17843709)>0.1) {
+    		return false;
+    	}
+    	if (Math.abs(myRates[5]-0.51216375613)>0.1) {
+    		return false;
+    	}
+    	if (Math.abs(myRates[6]-0.431055798)>0.1) {
+    		return false;
+    	}
+    	if (Math.abs(myRates[7]-1.121657)>0.2) {
+    		return false;
+    	}
+
+    	//下部
+    	if (Math.abs(myRates[8]-0.4327)>0.1) {
+    		return false;
+    	}
+    	if (Math.abs(myRates[9]-0.387906)>0.1) {
+    		return false;
+    	}
+    	if (Math.abs(myRates[10]-0.35541)>0.1) {
+    		return false;
+    	}
+    	if (Math.abs(myRates[11]-1.176)>0.2) {
+    		return false;
+    	}
+
+    	//全部
+    	if (Math.abs(myRates[12]-0.51813)>0.1) {
+    		return false;
+    	}
+    	if (Math.abs(myRates[13]-0.5009)>0.1) {
+    		return false;
+    	}
+    	if (Math.abs(myRates[14]-0.4633)>0.1) {
+    		return false;
+    	}
+    	if (Math.abs(myRates[15]-1.4823)>0.2) {
     		return false;
     	}
     	return true;
