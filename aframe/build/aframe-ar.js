@@ -2377,25 +2377,30 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		// console.log(greenRate);
 		// console.log(blueRate);
 		// console.log(rgbRate);
+		// alert(redRate);
+		// alert(greenRate);
+		// alert(blueRate);
+		// alert(rgbRate);
 		if (checkFromWeb(redRate,greenRate,blueRate,rgbRate)) {
 			alert("匹配成功");
 		}
     }
                                                                                                        
     function checkFromWeb(redRate,greenRate,blueRate,rgbRate){
+    	//再做几个判断，增加各1/3的数据进行判断。
     	// alert(Math.abs(greenRate-0.5521542202818628));
 	    // alert(Math.abs(blueRate-0.5477897390727124));
 	    // alert(Math.abs(redRate-1.6585723422181373));
-    	if (Math.abs(redRate-0.5586283828635621)>0.2) {
+    	if (Math.abs(redRate-0.49060068)>0.05) {
     		return false;
     	}
-    	if (Math.abs(greenRate-0.5521542202818628)>0.2) {
+    	if (Math.abs(greenRate-0.457966082005)>0.05) {
     		return false;
     	}
-    	if (Math.abs(blueRate-0.5477897390727124)>0.2) {
+    	if (Math.abs(blueRate-0.437504889195)>0.05) {
     		return false;
     	}
-    	if (Math.abs(redRate-1.6585723422181373)>1) {
+    	if (Math.abs(rgbRate-1.3860716528799)>0.1) {
     		return false;
     	}
     	return true;
