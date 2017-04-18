@@ -2434,9 +2434,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			imageInfoRates.push(myRates);
 				
 		}else{
-			
-			imageInfoRates.splice(0,1);
-			imageInfoRates.push(myRates);
+			var sumRate = 0;
 			for(var i=0; i<imageInfoRates.length;i++)
 			{
 				for(var j=0;j<myRates.length;j++){
@@ -2444,6 +2442,10 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 				}	
 			}	
 			console.log(sumRate);
+			imageInfoRates.splice(0,1);
+			imageInfoRates.push(myRates);
+			
+			
 		}
 		
 	

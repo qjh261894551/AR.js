@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>信息录入</title>
     <style type="text/css">
         *{margin:0;padding:0;font-family:PingFangSC-Regular,Microsoft YaHei;}
         .tea{text-align:center;}
@@ -23,7 +23,7 @@
         var sizeRate = document.documentElement.clientWidth/375.0*100;
         $(document).ready(function(){
             $('html').css('font-size',sizeRate).show();
-            $('body').on('click','.scan-btn',function(){
+            $('.list-box').on('click','.scan-btn',function(){
                 var materialName = $.trim($('.materialName').val());
                 var urlName =  $.trim($('.urlName').val());
                 if(materialName.length === 0){
