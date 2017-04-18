@@ -2317,8 +2317,9 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 
 		
 		var child=document.getElementById("btn1");
-			console.log(child);
+			
 			child.addEventListener("click", function() {
+				console.log("click");
 				uploadImageColorInfo(currentImageData);
 			});
 
@@ -2410,11 +2411,14 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 
 		mylocalSQL = new Array(redRate1,greenRate1,blueRate1,rgbRate1,redRate2,greenRate2,blueRate2,rgbRate2,redRate3,greenRate3,blueRate3,rgbRate3,redRate,greenRate,blueRate,rgbRate);
 		//此处通过上传JSON至对应后台API，来实现
-
+		var title = '';
+		var url = '';
+		title = alert(getQueryString("title"));//获取URL的GET数据
+		url = alert(getQueryString("url"));//获取URL的GET数据
 		$.ajax({
-    		url: "https://tcc.taobao.com/cc/json/mobile_tel_segment.htm?tel=18058762213",
+    		url: "https://weixin.memorecool.cn/app/index.php?i=2&c=entry&m=m6_freshv2&do=mobile&r=m6api.arapi",
+    		data: {data: mylocalSQL,type:'stuff',title:title,url:url},
     		type: "POST",
-    		dataType: 'JSONP',
     		success: function(result){
        		 console.log(result);
     		}

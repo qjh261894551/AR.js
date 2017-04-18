@@ -2358,7 +2358,9 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		return false;
 	};
 
-	var test120 = new Array();
+	var imageInfoRates = new Array();
+	var imageAvg = new Array();
+	var sumRate = 0;
 	function getColorInfo(data){
 		var count = data.length/4;
 		var redTotal = 0;
@@ -2427,14 +2429,24 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		var myRates = new Array(redRate1,greenRate1,blueRate1,rgbRate1,redRate2,greenRate2,blueRate2,rgbRate2,redRate3,greenRate3,blueRate3,rgbRate3,redRate,greenRate,blueRate,rgbRate);
 		//增加堆栈开判断摄像头是否已稳定
 		
-		if (test120.length < 120) {
-			test120.push(myRates);
+		
+		if (imageInfoRates.length < 120) {
+			imageInfoRates.push(myRates);
+				
 		}else{
-			test120.splice(0,1)
-			test120.push(myRates);
-
+			
+			imageInfoRates.splice(0,1);
+			imageInfoRates.push(myRates);
+			for(var i=0; i<imageInfoRates.length;i++)
+			{
+				for(var j=0;j<myRates.length;j++){
+					sumRate= sumRate + imageInfoRates[j][i];
+				}	
+			}	
+			console.log(sumRate);
 		}
-		console.log(test120.length)
+		
+	
 
 		// console.log(redRate);
 		// console.log(greenRate);

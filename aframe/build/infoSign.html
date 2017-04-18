@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        *{margin:0;padding:0;font-family:PingFangSC-Regular,Microsoft YaHei;}
+        .tea{text-align:center;}
+        .fz18{font-size:0.18rem;}
+        .fz16{font-size:0.16rem;}
+        .mt10{margin-top:0.1rem;}
+        .mt15{margin-top:0.15rem;}
+        .cr{color:#2196F3;}
+        .list-box{width:100%;height:100%;}
+        .info-box{margin:0 0.2rem;}
+        .img-info{padding:0.96rem 0 0.39rem 0;}
+        .img-info img{display:block;width:0.77rem;height:0.77rem;margin:0 auto;}
+        .input-list input{display:block; width:2.9rem; height:0.46rem; margin:0.12rem auto; border:none;background:#f8f8f8;}
+        .scan-btn{ width:2.9rem; height:0.42rem;margin:0.12rem auto;background:#77a8f3;line-height: 0.42rem; color:#fff;}
+    </style>
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript">
+        var sizeRate = document.documentElement.clientWidth/375.0*100;
+        $(document).ready(function(){
+            $('html').css('font-size',sizeRate).show();
+            $('body').on('click','.scan-btn',function(){
+                var materialName = $.trim($('.materialName').val());
+                var urlName =  $.trim($('.urlName').val());
+                if(materialName.length === 0){
+                    alert('您的名称不能为空！');
+                    return false;
+                }
+                window.location.href = 'https://weixin.memorecool.cn/mcar/mcstuff.html?title='+materialName+'&url='+urlName;
+            }); 
+        });
+           
+    </script>
+</head>
+<body>
+    <div class="list-box">
+       <div class="info-container">
+           <div class="info-box">
+                <div class="img-info">
+                    <img src="http://pic78.huitu.com/res/20160604/1029007_20160604114552332126_1.jpg">
+                    <div class="tea fz18 mt15 cr">员工端</div>
+                </div>
+                <div class="input-list">
+                    <input type="text" class="materialName fz16 " placeholder="请输入名称(必填)" value="" />
+                    <input type="text" class="urlName fz16 mt10 " placeholder="请输入URL" value=""/>
+                </div>
+                <div class="scan-btn fz18 tea">开始扫描</div>
+           </div>
+       </div>
+    </div>
+</body>
+</html>
