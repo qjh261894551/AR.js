@@ -2428,10 +2428,6 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		//增加堆栈开判断摄像头是否已稳定
 		checkAndPost(myRates);
 		
-		
-
-
-
 		// console.log(redRate);
 		// console.log(greenRate);
 		// console.log(blueRate);
@@ -2452,9 +2448,9 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		// alert(greenRate);//0.5009
 		// alert(blueRate);//0.4633
 		// alert(rgbRate);//1.4823
-		/*if (checkFromWeb(myRates)) {
+		if (checkFromWeb(myRates)) {
 			alert("匹配成功");
-		}*/
+		}
 	}
 
 	var imageInfoRates = new Array();
