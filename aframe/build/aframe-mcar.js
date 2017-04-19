@@ -2431,11 +2431,13 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
         async:true,  
         cache:false,  
         success: function(data){
-        	alert(data);
+        	var ret = JSON.parse(data);
+        	if (ret['result'] == "success") {
+        		alert(getQueryString("title")+"的配图已上传成功");
+        	}
         },  
         error: function(json){
-        	console.log(json);  
-            alert("订单取消异常，请刷新后重试...");  
+            alert("网络系统存在异常，请稍后再试");  
         }  
     });
 
@@ -2566,72 +2568,12 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		// alert(greenRate);//0.5009
 		// alert(blueRate);//0.4633
 		// alert(rgbRate);//1.4823
-		if (checkFromWeb(myRates)) {
-			alert("匹配成功");
-		}
+		// if (checkFromWeb(myRates)) {
+		// 	alert("匹配成功");
+		// }
 	}
 
 	function checkFromWeb(myRates){
-    	//再做几个判断，增加各1/3的数据进行判断。
-    	// alert(Math.abs(greenRate-0.5521542202818628));
-	    // alert(Math.abs(blueRate-0.5477897390727124));
-	    // alert(Math.abs(redRate-1.6585723422181373));
-	    //上部
-	    if (Math.abs(myRates[0]-mylocalSQL[0])>0.2) {
-	    	return false;
-	    }
-	    if (Math.abs(myRates[1]-mylocalSQL[1])>0.2) {
-	    	return false;
-	    }
-	    if (Math.abs(myRates[2]-mylocalSQL[2])>0.2) {
-	    	return false;
-	    }
-	    if (Math.abs(myRates[3]-mylocalSQL[3])>0.2) {
-	    	return false;
-	    }
-
-    	//中部
-    	if (Math.abs(myRates[4]-mylocalSQL[4])>0.2) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[5]-mylocalSQL[5])>0.2) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[6]-mylocalSQL[6])>0.2) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[7]-mylocalSQL[7])>0.2) {
-    		return false;
-    	}
-
-    	//下部
-    	if (Math.abs(myRates[8]-mylocalSQL[8])>0.2) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[9]-mylocalSQL[8])>0.2) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[10]-mylocalSQL[10])>0.2) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[11]-mylocalSQL[11])>0.2) {
-    		return false;
-    	}
-
-    	//全部
-    	if (Math.abs(myRates[12]-mylocalSQL[12])>0.2) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[13]-mylocalSQL[13])>0.2) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[14]-mylocalSQL[14])>0.2) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[15]-mylocalSQL[15])>0.2) {
-    		return false;
-    	}
-    	return true;
     }
 
     ARController.prototype._debugMarker = function(marker) {
