@@ -1154,7 +1154,10 @@ AFRAME.registerSystem('artoolkit', {
 			
 			var buttonElement = document.querySelector('.a-enter-vr')
 			if( buttonElement ){
-				buttonElement.style.position = 'fixed'
+				//将图标设置成隐藏的显示
+				buttonElement.style.visibility = 'hidden';
+				//buttonElement.style.position = 'fixed';
+
 			}
 		}
 		////////////////////////////////////////////////////////////////////////////////
@@ -2448,9 +2451,9 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		// alert(greenRate);//0.5009
 		// alert(blueRate);//0.4633
 		// alert(rgbRate);//1.4823
-		if (checkFromWeb(myRates)) {
-			alert("匹配成功");
-		}
+		// if (checkFromWeb(myRates)) {
+		// 	alert("匹配成功");
+		// }
 	}
 
 	var imageInfoRates = new Array();
@@ -2478,83 +2481,62 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			imageInfoRates.push(myRates);
 				if (AvgDvalue < 0.03 && imgflag == false) {
 				//此处进行上传，设置状态为已上传
-				imgflag = true;
-				console.log("上传");
+				
 				//发送请求传递当前照片的16个参数，返回值中有url和title就显示按钮
+				var mydata = {"data":myRates,"type":"user"};
+				var mystr = JSON.stringify(mydata);
+				$.ajax({  
+			        type: "GET",  
+			        url: "./../mcar/arapi.php?data="+mystr, 
+			        async:true,  
+			        cache:false,  
+			        success: function(data){
+			        	var myData = JSON.parse(data);
+			        	//console.log(myData);
+			        	if(myData['result'] == "success"){
+				        	var show = document.getElementsByClassName('img-info-btn')[0];
+				        	$('.img-info-btn').html(myData['title']);
+							if (show.style.visibility == "hidden"){  
+					   		    show.style.visibility = "visible";  
+							}
+							$('.img-info-btn').click(function (){
+				        		window.location.href = myData['url'];
+				        	});
+						}else{
+							var show = document.getElementsByClassName('img-info-btn')[0];
+							if (show.style.visibility == "visible"){  
+					   		   show.style.visibility="hidden";  
+							}
+							window.setTimeout(function(){alert("抱歉，没有查到该图片")},500);
 
-			}else if (AvgDvalue > 0.2 && imgflag == true) {
+						}
+						//console.log(data);
+						
+			        },  
+			        error: function(json){
+			        	console.log(json);  
+			            alert("网络通信异常……");  
+			        }  
+   			    });
+   			    imgflag = true;
+				//console.log("上传");
+   			   
+				
+			}else if (AvgDvalue > 0.4 && imgflag == true) {
 				//设置状态为未上传。
 				//按钮消失
-				console.log("不传");
-				imgflag = false;;
+				//console.log("不传");
+				imgflag = false;
+				var show = document.getElementsByClassName('img-info-btn')[0];
+				if (show.style.visibility == "visible"){  
+				   show.style.visibility="hidden";  
+				}
 				
 			}
-
-
-
 	}
 	}
 	function checkFromWeb(myRates){
-    	//再做几个判断，增加各1/3的数据进行判断。
-    	// alert(Math.abs(greenRate-0.5521542202818628));
-	    // alert(Math.abs(blueRate-0.5477897390727124));
-	    // alert(Math.abs(redRate-1.6585723422181373));
-	    //上部
-	    if (Math.abs(myRates[0]-0.586383846)>0.1) {
-	    	return false;
-	    }
-	    if (Math.abs(myRates[1]-0.6025065)>0.1) {
-	    	return false;
-	    }
-	    if (Math.abs(myRates[2]-0.6034276)>0.1) {
-	    	return false;
-	    }
-	    if (Math.abs(myRates[3]-1.7923179764)>0.2) {
-	    	return false;
-	    }
-
-    	//中部
-    	if (Math.abs(myRates[4]-0.17843709)>0.1) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[5]-0.51216375613)>0.1) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[6]-0.431055798)>0.1) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[7]-1.121657)>0.2) {
-    		return false;
-    	}
-
-    	//下部
-    	if (Math.abs(myRates[8]-0.4327)>0.1) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[9]-0.387906)>0.1) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[10]-0.35541)>0.1) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[11]-1.176)>0.2) {
-    		return false;
-    	}
-
-    	//全部
-    	if (Math.abs(myRates[12]-0.51813)>0.1) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[13]-0.5009)>0.1) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[14]-0.4633)>0.1) {
-    		return false;
-    	}
-    	if (Math.abs(myRates[15]-1.4823)>0.2) {
-    		return false;
-    	}
-    	return true;
+ 	//为了验证图片信息
     }
 
     ARController.prototype._debugMarker = function(marker) {
