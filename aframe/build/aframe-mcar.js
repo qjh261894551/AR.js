@@ -2421,20 +2421,8 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		var mydata = {"data":mylocalSQL,"type":"stuff","title":getQueryString("title"),"url":getQueryString("url")};
 		var mystr = JSON.stringify(mydata);
 		
-		// $.ajax({
-  //       url: "https://www.baifubao.com/callback?cmd=1059&callback=phone&phone=18058762213",
-  //       type: 'POST',
-  //       // dataType: 'text',//here
-  //       success: function (data) {
-  //       	alert(data);
-  //       },
-  //       error:function(XMLHttpRequest, textStatus, errorThrown){
-  //       	alert(textStatus);
-  //       	alert(XMLHttpRequest.status);
-  //       	alert(XMLHttpRequest.readyState);
-  //       }
-  //   	});
 
+  		// alert(mystr);
     	$.ajax({  
         type: "GET",  
         url: "./../mcar/arapi.php?data="+mystr, //orderModifyStatus  
@@ -2450,20 +2438,6 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
             alert("订单取消异常，请刷新后重试...");  
         }  
     });
-
-		// $.ajax({
-  //       url: "./../app/index.php?i=2&c=entry&m=m6_freshv2&do=mobile&r=m6api.arapi&data="+mystr,
-  //       type: 'GET',
-  //       // dataType: 'JSONP',//here
-  //       success: function (data) {
-  //       	alert(data);
-  //       },
-  //       error:function(XMLHttpRequest, textStatus, errorThrown){
-  //       	alert(textStatus);
-  //       	alert(XMLHttpRequest.status);
-  //       	alert(XMLHttpRequest.readyState);
-  //       }
-  //   	});
 
 	}
 
