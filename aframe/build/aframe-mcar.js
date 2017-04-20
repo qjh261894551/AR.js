@@ -1154,7 +1154,9 @@ AFRAME.registerSystem('artoolkit', {
 			
 			var buttonElement = document.querySelector('.a-enter-vr')
 			if( buttonElement ){
-				buttonElement.style.position = 'fixed'
+				//将图标设置成隐藏的显示
+				buttonElement.style.visibility = 'hidden';
+				//buttonElement.style.position = 'fixed';
 			}
 		}
 		////////////////////////////////////////////////////////////////////////////////

@@ -2331,7 +2331,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			image = this.image;
 		}
 
-
+		
 		if (this.orientation === 'portrait') {
 			this.ctx.save();
 			this.ctx.translate(this.canvas.width, 0);
@@ -2492,25 +2492,20 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			        cache:false,  
 			        success: function(data){
 			        	var myData = JSON.parse(data);
-			        	//console.log(myData);
 			        	if(myData['result'] == "success"){
-			        		//console.log(1);
 				        	var show = document.getElementsByClassName('img-info-btn')[0];
 				        	$('.img-info-btn').html(myData['title']);
 							if (show.style.visibility == "hidden"){  
 					   		    show.style.visibility = "visible";  
 							}
-							console.log(myData['url']);
 							$('.img-info-btn').click(function (){
-				        		var url=myData['url'].substr(0,7).toLowerCase();
-				        		//console.log(url);
-										if(url == 'http://'){
+				        		var url = myData['url'].substr(0,8).toLowerCase();
+									if(url.indexOf('http://') > -1 || url.indexOf('https://') > -1){
 											window.location.href = myData['url'];
-										}else{
+									}else{
 											var burl = "http://" + myData['url'];
 											window.location.href = burl;
-											//console.log(burl);
-										}
+										}	
 				        	});
 						}else{
 							var show = document.getElementsByClassName('img-info-btn')[0];
@@ -2521,7 +2516,6 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 
 						}
 						//console.log(data);
-						
 			        },  
 			        error: function(json){
 			        	console.log(json);  
