@@ -2435,7 +2435,12 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
         success: function(data){
         	var ret = JSON.parse(data);
         	if (ret['result'] == "success") {
-        		alert(getQueryString("title")+"的配图已上传成功");
+        		var show = document.getElementsByClassName('update-box')[0];
+        		$('.update-box').html(getQueryString("title").substr(0,3) + "配图上传成功");
+				if (show.style.visibility == "hidden"){  
+					show.style.visibility = "visible";  
+				}
+				window.setTimeout(function (){show.style.visibility = "hidden";},2000);			
         	}
         },  
         error: function(json){

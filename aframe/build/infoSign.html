@@ -30,6 +30,10 @@
                     alert('您的名称不能为空！');
                     return false;
                 }
+                if(urlName.length === 0){
+                    alert('您的url不能为空！');
+                    return false;
+                }
                 window.location.href = 'https://weixin.memorecool.cn/mcar/mcstuff.html?title='+materialName+'&url='+urlName;
             }); 
         });

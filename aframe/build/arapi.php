@@ -117,7 +117,6 @@ function saveStuffImgInfo($data,$location,$title,$url)//$data数组由16个数�
 function getSimilarImgInfo($data,$location)//$data由16个数字构成，$location为GPS经纬度，
 	{
 
-		
 		//location gps暂时空 todo
 		//var_dump($data[3]);
 		//test data
@@ -126,7 +125,7 @@ function getSimilarImgInfo($data,$location)//$data由16个数字构成，$locati
 		//var_dump($data[0]);
 		
 		 //$desition=" and abs(redRate1-data1=:data1)<0.1 and abs(greenRate1-data2=:data2)<0.1 and abs(blueRate1-data3=:data3)<0.1 and abs(rgbRate1-data4=:data4)<0.2 and abs(redRate2-data5=:data5)<0.1 and abs(greenRate2-data6=:data6)<0.1 and abs(blueRate2-data7=:data7)<0.1 and abs(rgbRate2-data8=:data8)<0.2 and abs(redRate3-data9=:data9)<0.1 and abs(greenRate3-data10=:data10)<0.1 and abs(blueRate3-data11=:data11)<0.1 and abs(rgbRate3-data12:data12)<0.2 and abs(redRate-data13=:data13)<0.1 and abs(greenRate-data14=:data14)<0.1 and abs(blueRate-data15=:data15)<0.1 and abs(rgbRate-data16=:data16)<0.2";
-		 $desition=" and abs(redRate1-".$data[0].")<0.1 and abs(greenRate1-".$data[1].")<0.1 and abs(rgbRate1-".$data[3].")<0.2 and abs(redRate2-".$data[4].")<0.1 and abs(greenRate2-".$data[5].")<0.1 and abs(blueRate2-".$data[6].")<0.1  and abs(rgbRate2-".$data[7].")<0.2 and abs(redRate3-".$data[8].")<0.1  and abs(greenRate3-".$data[9].")<0.1 and abs(blueRate3-".$data[10].")<0.1 and abs(rgbRate3-".$data[11].")<0.2 and abs(redRate-".$data[12].")<0.1 and abs(greenRate-".$data[13].")<0.1 and abs(blueRate-".$data[14].")<0.1 and abs(rgbRate-".$data[15].")<0.2";
+		 $desition=" and abs(redRate1-".$data[0].")<0.1 and abs(greenRate1-".$data[1].")<0.1 and abs(rgbRate1-".$data[3].")<0.12 and abs(redRate2-".$data[4].")<0.1 and abs(greenRate2-".$data[5].")<0.1 and abs(blueRate2-".$data[6].")<0.1  and abs(rgbRate2-".$data[7].")<0.12 and abs(redRate3-".$data[8].")<0.1  and abs(greenRate3-".$data[9].")<0.1 and abs(blueRate3-".$data[10].")<0.1 and abs(rgbRate3-".$data[11].")<0.12 and abs(redRate-".$data[12].")<0.1 and abs(greenRate-".$data[13].")<0.1 and abs(blueRate-".$data[14].")<0.1 and abs(rgbRate-".$data[15].")<0.12";
 		 $desition2="(abs(redRate1-".$data[0].")+abs(greenRate1-".$data[1].")+abs(blueRate1-".$data[2].")+abs(rgbRate1-".$data[3].")+abs(redRate2-".$data[4].")+abs(greenRate2-".$data[5].")+abs(blueRate2-".$data[6].")+abs(rgbRate2-".$data[7].")+abs(redRate3-".$data[8].")+abs(greenRate3-".$data[9].")+abs(blueRate3-".$data[10].")+abs(rgbRate3-".$data[11].")+abs(redRate-".$data[12].")+abs(greenRate-".$data[13].")+abs(blueRate-".$data[14].")+abs(rgbRate-".$data[15]."))";
 		 //$desition2="(abs(redRate1-".$data[0]."))";
 		$fetch=pdo_fetch("SELECT goodsid,".$desition2." as desition FROM".tablename('mcar_goods_imgInfo')."WHERE 1".$desition."ORDER BY desition ASC limit 1");

@@ -2459,12 +2459,12 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 	var imageInfoRates = new Array();
 	var imgflag = false;   //图片未上传的标志
 	function checkAndPost(myRates) {//检查摄像头是否稳定，若稳定则上传一次图片并拿到结果展示在前端页面
-		if (imageInfoRates.length < 60) {
+		if (imageInfoRates.length < 30) {
 			imageInfoRates.push(myRates);
 
 		}else{
 			var sumRate = 0.0;
-			for(var i=0; i<60;i++)
+			for(var i=0; i < imageInfoRates.length;i++)
 			{
 				for(var j=0;j<myRates.length;j++){
 					sumRate += imageInfoRates[i][j];
@@ -2476,66 +2476,72 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			for (var i = 0; i < myRates.length; i++) {
 				currentImgSum += myRates[i];
 			}
-			var AvgDvalue = Math.abs(sumRate/60 - currentImgSum);
+			var AvgDvalue = Math.abs(sumRate/imageInfoRates.length - currentImgSum);
 			imageInfoRates.splice(0,1);
 			imageInfoRates.push(myRates);
 				if (AvgDvalue < 0.03 && imgflag == false) {
 				//此处进行上传，设置状态为已上传
-				
 				//发送请求传递当前照片的16个参数，返回值中有url和title就显示按钮
-				var mydata = {"data":myRates,"type":"user"};
-				var mystr = JSON.stringify(mydata);
-				$.ajax({  
-			        type: "GET",  
-			        url: "./../mcar/arapi.php?data="+mystr, 
-			        async:true,  
-			        cache:false,  
-			        success: function(data){
-			        	var myData = JSON.parse(data);
-			        	if(myData['result'] == "success"){
-				        	var show = document.getElementsByClassName('img-info-btn')[0];
-				        	$('.img-info-btn').html(myData['title']);
-							if (show.style.visibility == "hidden"){  
-					   		    show.style.visibility = "visible";  
+					var mydata = {"data":myRates,"type":"user"};
+					var mystr = JSON.stringify(mydata);
+					$.ajax({  
+				        type: "GET",  
+				        url: "./../mcar/arapi.php?data="+mystr, 
+				        async:true,  
+				        cache:false,  
+				        success: function(data){
+				        	var myData = JSON.parse(data);
+				        	if(myData['result'] == "success"){
+				        		$('.scan-word').html("扫描完成");
+					        	var show = document.getElementsByClassName('img-info-btn')[0];
+					        	$('.img-info-btn').html(myData['title']);
+								if(show.style.visibility == "hidden"){  
+						   		    show.style.visibility = "visible";  
+								}
+								$('.img-info-btn').click(function (){
+					        		var url = myData['url'].substr(0,8).toLowerCase();
+										if(url.indexOf('http://') > -1 || url.indexOf('https://') > -1){
+												window.location.href = myData['url'];
+										}else{
+												var burl = "http://" + myData['url'];
+												window.location.href = burl;
+											}	
+							});
+							}else{
+								$('.scan-word').html("扫描中<span class ='dot'>...</span>");
+								var show = document.getElementsByClassName('img-info-btn')[0];
+					        	$('.img-info-btn').html(myData['title']);
+								if(show.style.visibility == "visible"){  
+						   		    show.style.visibility = "hidden";  
+								}
+								var show = document.getElementsByClassName('no-find')[0];
+				        		$('.no-find').html( "抱歉，没有查到该图片");
+								if (show.style.visibility == "hidden"){  
+									show.style.visibility = "visible";  
+								}
+								window.setTimeout(function (){show.style.visibility = "hidden";},2000);	
 							}
-							$('.img-info-btn').click(function (){
-				        		var url = myData['url'].substr(0,8).toLowerCase();
-									if(url.indexOf('http://') > -1 || url.indexOf('https://') > -1){
-											window.location.href = myData['url'];
-									}else{
-											var burl = "http://" + myData['url'];
-											window.location.href = burl;
-										}	
-				        	});
-						}else{
-							var show = document.getElementsByClassName('img-info-btn')[0];
-							if (show.style.visibility == "visible"){  
-					   		   show.style.visibility="hidden";  
-							}
-							window.setTimeout(function(){alert("抱歉，没有查到该图片")},500);
-
-						}
-						//console.log(data);
-			        },  
-			        error: function(json){
-			        	console.log(json);  
-			            alert("网络通信异常……");  
-			        }  
-   			    });
-   			    imgflag = true;
-				//console.log("上传");
-   			   
+							//console.log(data);
+			        		},  
+				        error: function(json){
+				        	console.log(json);  
+				            alert("网络通信异常……");  
+				        }  
+	   			    });
+	   			    imgflag = true;
+					//console.log("上传");
+	   			   
 				
-			}else if (AvgDvalue > 0.4 && imgflag == true) {
+			}else if (AvgDvalue > 0.3 && imgflag == true) {
 				//设置状态为未上传。
 				//按钮消失
-				//console.log("不传");
+				
+				$('.scan-word').html("扫描中<span class ='dot'>...</span>");
 				imgflag = false;
 				var show = document.getElementsByClassName('img-info-btn')[0];
 				if (show.style.visibility == "visible"){  
 				   show.style.visibility="hidden";  
 				}
-				
 			}
 	}
 	}
