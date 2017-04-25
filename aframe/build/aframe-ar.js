@@ -2571,8 +2571,9 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 												window.location.href = burl;
 											}	
 							});
+								window.setTimeout(function (){},1000);	
 							}else{
-								$('.scan-word').html("扫描中<span class ='dot'>...</span>");
+								$('.scan-word').html("扫描完成");
 								var show = document.getElementsByClassName('img-info-btn')[0];
 					        	$('.img-info-btn').html(myData['title']);
 								if(show.style.visibility == "visible"){  
@@ -2583,7 +2584,8 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 								if (show.style.visibility == "hidden"){  
 									show.style.visibility = "visible";  
 								}
-								window.setTimeout(function (){show.style.visibility = "hidden";},2000);	
+								// window.setTimeout(function (){show.style.visibility = "hidden";},2000);	
+								window.setTimeout(function (){},500);	
 							}
 							//console.log(data);
 			        		},  
@@ -2599,7 +2601,8 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			}else if (AvgDvalue > 0.3 && imgflag == true) {
 				//设置状态为未上传。
 				//按钮消失
-				
+				var nofindshow = document.getElementsByClassName('no-find')[0];
+				nofindshow.style.visibility = "hidden";
 				$('.scan-word').html("扫描中<span class ='dot'>...</span>");
 				imgflag = false;
 				var show = document.getElementsByClassName('img-info-btn')[0];
@@ -2607,6 +2610,8 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 				   show.style.visibility="hidden";  
 				}
 			}
+			console.log(AvgDvalue);
+			console.log(imgflag);
 	}
 	}
 	function checkFromWeb(myRates){
