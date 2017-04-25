@@ -2381,14 +2381,9 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			}
 		}
 
-		var max = 0;
-		var maxpoi = 0;
+		
 		for (var i=0; i<histogram.length; i++) {
 			histogram[i] = histogram[i]/count;
-			if (max<histogram[i]) {
-				max = histogram[i];
-				maxpoi = i;
-			}
 		}//计算出每级比例
 		// console.log(max);
 		// console.log(maxpoi);
@@ -2397,7 +2392,8 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		for (var i = 0; i < histogram32.length; i++) {
 			histogram32[i] = 0;
 		}
-		max = 0;
+		var max = 0;
+		var maxpoi = 0;
 		for (var i=0; i<histogramCount; i++) {
 			histogram32[i] += histogram[i*8];
 			histogram32[i] += histogram[i*8+1];
@@ -2410,12 +2406,12 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			}
 			
 		}//计算出32级每级比例
-		console.log(max);
-		console.log(maxpoi);
-		binaryzation[0] = binaryzation[0]/count;
-		binaryzation[1] = binaryzation[1]/count;//二值化比例，误差控制在5%
+		// console.log(max);
+		// console.log(maxpoi);
+		// binaryzation[0] = binaryzation[0]/count;//<128
+		binaryzation[1] = binaryzation[1]/count;//>128二值化比例，误差控制在5%
 		// console.log(histogram32);
-		return data;
+		return new Array(maxpoi,binaryzation[1]);
 	}
 
 	function uploadImageColorInfo(data){
@@ -2485,10 +2481,12 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 
 		mylocalSQL = new Array(redRate1,greenRate1,blueRate1,rgbRate1,redRate2,greenRate2,blueRate2,rgbRate2,redRate3,greenRate3,blueRate3,rgbRate3,redRate,greenRate,blueRate,rgbRate);
 		//此处通过上传JSON至对应后台API，来实现
-		var mydata = {"data":mylocalSQL,"type":"stuff","title":getQueryString("title"),"url":getQueryString("url")};
+		var myGray = rgbToGray(data);//返回数组由最大灰度X轴及大于128的二值化比例构成
+
+		var mydata = {"data":mylocalSQL,"grayData":myGray,"type":"stuff","title":getQueryString("title"),"url":getQueryString("url")};
 		var mystr = JSON.stringify(mydata);
 		
-
+		// console.log(myarr);
   		// alert(mystr);
     	$.ajax({  
         type: "GET",  

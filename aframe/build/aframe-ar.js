@@ -2361,6 +2361,69 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		return false;
 	};
 
+	function rgbToGray(data){
+		var count = data.length/4;
+		//全部
+		var R = 0;
+		var G = 0;
+		var B = 0;
+		var Grey = 0;
+		var histogram = new Array(256);
+		var binaryzation = new Array(0,0);
+		for (var i = 0; i < histogram.length; i++) {
+			histogram[i] = 0;
+		}
+		for (var i=0; i<count; i++) {
+			R = data[i*4];
+			G = data[1+i*4];
+			B = data[2+i*4];
+			Grey = (R*38 + G*75 + B*15)>> 7;//拿到灰度值
+			if (histogram[Grey] != 0) {
+				histogram[Grey] = histogram[Grey]+1;
+			}else{
+				histogram[Grey] = 1;
+			}
+
+			if (Grey<128) {
+				binaryzation[0]++;
+			}else{
+				binaryzation[1]++;
+			}
+		}
+
+		
+		for (var i=0; i<histogram.length; i++) {
+			histogram[i] = histogram[i]/count;
+		}//计算出每级比例
+		// console.log(max);
+		// console.log(maxpoi);
+		var histogramCount = histogram.length/8;//转为32级灰度直方图
+		var histogram32 = new Array(32);
+		for (var i = 0; i < histogram32.length; i++) {
+			histogram32[i] = 0;
+		}
+		var max = 0;
+		var maxpoi = 0;
+		for (var i=0; i<histogramCount; i++) {
+			histogram32[i] += histogram[i*8];
+			histogram32[i] += histogram[i*8+1];
+			histogram32[i] += histogram[i*8+2];
+			histogram32[i] += histogram[i*8+3];
+
+			if (max<histogram32[i]) {
+				max = histogram32[i];
+				maxpoi = i;
+			}
+			
+		}//计算出32级每级比例
+		// console.log(max);
+		// console.log(maxpoi);
+		// binaryzation[0] = binaryzation[0]/count;//<128
+		binaryzation[1] = binaryzation[1]/count;//>128二值化比例，误差控制在5%
+		// console.log(histogram32);
+		return new Array(maxpoi,binaryzation[1]);
+	}
+
 	
 	function getColorInfo(data){
 		var count = data.length/4;
@@ -2429,7 +2492,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 
 		var myRates = new Array(redRate1,greenRate1,blueRate1,rgbRate1,redRate2,greenRate2,blueRate2,rgbRate2,redRate3,greenRate3,blueRate3,rgbRate3,redRate,greenRate,blueRate,rgbRate);
 		//增加堆栈开判断摄像头是否已稳定
-		checkAndPost(myRates);
+		checkAndPost(myRates,data);
 		
 		// console.log(redRate);
 		// console.log(greenRate);
@@ -2458,7 +2521,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 
 	var imageInfoRates = new Array();
 	var imgflag = false;   //图片未上传的标志
-	function checkAndPost(myRates) {//检查摄像头是否稳定，若稳定则上传一次图片并拿到结果展示在前端页面
+	function checkAndPost(myRates,data) {//检查摄像头是否稳定，若稳定则上传一次图片并拿到结果展示在前端页面
 		if (imageInfoRates.length < 30) {
 			imageInfoRates.push(myRates);
 
@@ -2480,9 +2543,10 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			imageInfoRates.splice(0,1);
 			imageInfoRates.push(myRates);
 				if (AvgDvalue < 0.03 && imgflag == false) {
+					var myGray = rgbToGray(data);//返回数组由最大灰度X轴及大于128的二值化比例构成
 				//此处进行上传，设置状态为已上传
 				//发送请求传递当前照片的16个参数，返回值中有url和title就显示按钮
-					var mydata = {"data":myRates,"type":"user"};
+					var mydata = {"data":myRates,"grayData":myGray,"type":"user"};
 					var mystr = JSON.stringify(mydata);
 					$.ajax({  
 				        type: "GET",  
