@@ -2368,8 +2368,14 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		var G = 0;
 		var B = 0;
 		var Grey = 0;
+		var myGrey = 0;
 		var histogram = new Array(256);
 		var binaryzation = new Array(0,0);
+		var histogram32 = new Array(32);
+		for (var i = 0; i < histogram32.length; i++) {
+			histogram32[i] = 0;
+		}
+		
 		for (var i = 0; i < histogram.length; i++) {
 			histogram[i] = 0;
 		}
@@ -2378,11 +2384,12 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			G = data[1+i*4];
 			B = data[2+i*4];
 			Grey = (R*38 + G*75 + B*15)>> 7;//拿到灰度值
-			if (histogram[Grey] != 0) {
-				histogram[Grey] = histogram[Grey]+1;
-			}else{
-				histogram[Grey] = 1;
-			}
+			myGrey = parseInt(Grey/8);
+			histogram32[myGrey] = histogram32[myGrey]+1;
+
+
+			histogram[Grey] = histogram[Grey]+1;
+			
 
 			if (Grey<128) {
 				binaryzation[0]++;
@@ -2390,36 +2397,27 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 				binaryzation[1]++;
 			}
 		}
-
 		
 		for (var i=0; i<histogram.length; i++) {
 			histogram[i] = histogram[i]/count;
 		}//计算出每级比例
-		// console.log(max);
-		// console.log(maxpoi);
-		var histogramCount = histogram.length/8;//转为32级灰度直方图
-		var histogram32 = new Array(32);
-		for (var i = 0; i < histogram32.length; i++) {
-			histogram32[i] = 0;
-		}
+
 		var max = 0;
 		var maxpoi = 0;
-		for (var i=0; i<histogramCount; i++) {
-			histogram32[i] += histogram[i*8];
-			histogram32[i] += histogram[i*8+1];
-			histogram32[i] += histogram[i*8+2];
-			histogram32[i] += histogram[i*8+3];
-			histogram32[i] += histogram[i*8+4];
-			histogram32[i] += histogram[i*8+5];
-			histogram32[i] += histogram[i*8+6];
-			histogram32[i] += histogram[i*8+7];
+		for (var i=0; i<histogram32.length; i++) {
 
 			if (max<histogram32[i]) {
 				max = histogram32[i];
 				maxpoi = i;
 			}
 			
-		}//计算出32级每级比例
+		}//得到32级的最大位置及最大值
+		// for (var i=0; i<histogram32.length; i++) {
+		// 	histogram32[i] = histogram32[i]/count;
+		// }//计算出32级每级比例
+
+		// console.log(histogram32);
+		// console.log(myhistogram32);
 		// console.log(max);
 		// console.log(maxpoi);
 		// binaryzation[0] = binaryzation[0]/count;//<128
@@ -2614,8 +2612,8 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 				   show.style.visibility="hidden";  
 				}
 			}
-			console.log(AvgDvalue);
-			console.log(imgflag);
+			// console.log(AvgDvalue);
+			// console.log(imgflag);
 	}
 	}
 	function checkFromWeb(myRates){
