@@ -2399,6 +2399,10 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			histogram32[i] += histogram[i*8+1];
 			histogram32[i] += histogram[i*8+2];
 			histogram32[i] += histogram[i*8+3];
+			histogram32[i] += histogram[i*8+4];
+			histogram32[i] += histogram[i*8+5];
+			histogram32[i] += histogram[i*8+6];
+			histogram32[i] += histogram[i*8+7];
 
 			if (max<histogram32[i]) {
 				max = histogram32[i];
