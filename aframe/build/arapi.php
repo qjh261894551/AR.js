@@ -9,6 +9,7 @@
 * 
 *GET json 测试数据
 *{"data":[0.4,0.3,0.3,1.1,0.1,0.4,0.4,1,0.4,0.4,0.3,1.2,0.4,0.4,0.3,1.2],"type":"user","location":{"lng":123,"lat":321},"title":"abc","url":"www.baidu.com","grayData":[32,0.123]}
+*{"data":[0.7,0.8,0.8,2.3,0.1,0.4,0.4,0.85,0.4,0.27,0.23,0.85,0.5,0.4,0.4,1.45],"type":"user","location":{"lng":123,"lat":321},"title":"abc","url":"www.baidu.com","grayData":[26,0.53]}
 * 
 *数据需要以JSON传入，内容为：data 16位数组，title 图片标题（非用户操作时）,url 图片地址,
 *location 坐标以对象形式传入,type 为操作类型（值：user为用户 进行图片比对，stuff为
@@ -46,7 +47,12 @@ if(isset($_GET['data'])){
 	
 	//4.非正常访问(无数据请求)
 	//结果：{"result": "error","code": 0}
-	
+	$DVALUE=0.1;//分色差值
+	$MGL=3;//灰度等级差值
+	$BR=0.05;//binaRate 差值
+	$RGB=0.2;//合色差值
+	$length=3;
+	$result=array();
 	switch ($data->type) {
 		case 'stuff':
 			$result=saveStuffImgInfo($mydata,$location,$data->title,$data->url,$grayData);
@@ -54,7 +60,15 @@ if(isset($_GET['data'])){
 			exit($result);
 			break;
 		case 'user':
-			$result=getSimilarImgInfo($mydata,$location,$grayData);
+		for($i=0;$i<$length;$i++){
+			if(!isset($result['success'])){
+			$result=getSimilarImgInfo($mydata,$location,$grayData,$DVALUE,$MGL,$BR,$RGB);
+			$MGL+=1;
+			$DVALUE+=0.1;
+			$BR+=0.05;
+			$RGB+=0.1;
+			}else return;
+		}
 			$result=json_encode($result,JSON_UNESCAPED_UNICODE);
 			exit($result);
 			break;
@@ -117,9 +131,9 @@ function saveStuffImgInfo($data,$location,$title,$url,$grayData)//$data数组由
 		}
 	}
 
-function getSimilarImgInfo($data,$location,$grayData)//$data由16个数字构成，$location为GPS经纬度，$grayData灰度相关值
+function getSimilarImgInfo($data,$location,$grayData,$DVALUE,$MGL,$BR,$RGB)//$data由16个数字构成，$location为GPS经纬度，$grayData灰度相关值
 	{
-
+		
 		//location gps暂时空 todo
 		//var_dump($data[3]);
 		//test data
@@ -128,8 +142,8 @@ function getSimilarImgInfo($data,$location,$grayData)//$data由16个数字构成
 		//var_dump($data[0]);
 		
 		 //$desition=" and abs(redRate1-data1=:data1)<0.1 and abs(greenRate1-data2=:data2)<0.1 and abs(blueRate1-data3=:data3)<0.1 and abs(rgbRate1-data4=:data4)<0.2 and abs(redRate2-data5=:data5)<0.1 and abs(greenRate2-data6=:data6)<0.1 and abs(blueRate2-data7=:data7)<0.1 and abs(rgbRate2-data8=:data8)<0.2 and abs(redRate3-data9=:data9)<0.1 and abs(greenRate3-data10=:data10)<0.1 and abs(blueRate3-data11=:data11)<0.1 and abs(rgbRate3-data12:data12)<0.2 and abs(redRate-data13=:data13)<0.1 and abs(greenRate-data14=:data14)<0.1 and abs(blueRate-data15=:data15)<0.1 and abs(rgbRate-data16=:data16)<0.2";
-		 $desition=" and abs(maxGrayLevel-".$grayData[0].")<3 and abs(binaRate-".$grayData[1].")<0.05";
-		 $desition .=" and abs(redRate1-".$data[0].")<0.1 and abs(greenRate1-".$data[1].")<0.1 and abs(rgbRate1-".$data[3].")<0.12 and abs(redRate2-".$data[4].")<0.1 and abs(greenRate2-".$data[5].")<0.1 and abs(blueRate2-".$data[6].")<0.1  and abs(rgbRate2-".$data[7].")<0.12 and abs(redRate3-".$data[8].")<0.1  and abs(greenRate3-".$data[9].")<0.1 and abs(blueRate3-".$data[10].")<0.1 and abs(rgbRate3-".$data[11].")<0.12 and abs(redRate-".$data[12].")<0.1 and abs(greenRate-".$data[13].")<0.1 and abs(blueRate-".$data[14].")<0.1 and abs(rgbRate-".$data[15].")<0.12";
+		 $desition=" and abs(maxGrayLevel-".$grayData[0].")<".$MGL." and abs(binaRate-".$grayData[1].")<".$BR."";
+		 $desition .=" and abs(redRate1-".$data[0].")<".$DVALUE." and abs(greenRate1-".$data[1].")<".$DVALUE." and abs(blueRate1-".$data[2].")<".$DVALUE." and abs(rgbRate1-".$data[3].")<".$RGB." and abs(redRate2-".$data[4].")<".$DVALUE." and abs(greenRate2-".$data[5].")<".$DVALUE." and abs(blueRate2-".$data[6].")<".$DVALUE."  and abs(rgbRate2-".$data[7].")<".$RGB." and abs(redRate3-".$data[8].")<".$DVALUE."  and abs(greenRate3-".$data[9].")<".$DVALUE." and abs(blueRate3-".$data[10].")<".$DVALUE." and abs(rgbRate3-".$data[11].")<".$RGB." and abs(redRate-".$data[12].")<".$DVALUE." and abs(greenRate-".$data[13].")<".$DVALUE." and abs(blueRate-".$data[14].")<".$DVALUE." and abs(rgbRate-".$data[15].")<".$RGB."";
 		 $desition2="(abs(redRate1-".$data[0].")+abs(greenRate1-".$data[1].")+abs(blueRate1-".$data[2].")+abs(rgbRate1-".$data[3].")+abs(redRate2-".$data[4].")+abs(greenRate2-".$data[5].")+abs(blueRate2-".$data[6].")+abs(rgbRate2-".$data[7].")+abs(redRate3-".$data[8].")+abs(greenRate3-".$data[9].")+abs(blueRate3-".$data[10].")+abs(rgbRate3-".$data[11].")+abs(redRate-".$data[12].")+abs(greenRate-".$data[13].")+abs(blueRate-".$data[14].")+abs(rgbRate-".$data[15].")+abs(maxGrayLevel-".$grayData[0].")+abs(binaRate-".$grayData[1]."))";
 		 //$desition2="(abs(redRate1-".$data[0]."))";
 		$fetch=pdo_fetch("SELECT goodsid,".$desition2." as desition FROM".tablename('mcar_goods_imgInfo')."WHERE 1".$desition."ORDER BY desition ASC limit 1");
