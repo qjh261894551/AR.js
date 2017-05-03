@@ -2487,7 +2487,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		//此处通过上传JSON至对应后台API，来实现
 		var myGray = rgbToGray(data);//返回数组由最大灰度X轴及大于128的二值化比例构成
 		console.log(myGray);
-		var mydata = {"data":mylocalSQL,"grayData":myGray,"type":"stuff","title":getQueryString("title"),"url":getQueryString("url")};
+		var mydata = {"data":mylocalSQL,"grayData":myGray,"type":"stuff","source":"web","title":getQueryString("title"),"url":getQueryString("url")};
 		var mystr = JSON.stringify(mydata);
 		
 		// console.log(myarr);

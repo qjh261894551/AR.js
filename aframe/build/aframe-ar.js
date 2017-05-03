@@ -2548,7 +2548,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 					var myGray = rgbToGray(data);//返回数组由最大灰度X轴及大于128的二值化比例构成
 				//此处进行上传，设置状态为已上传
 				//发送请求传递当前照片的16个参数，返回值中有url和title就显示按钮
-					var mydata = {"data":myRates,"grayData":myGray,"type":"user"};
+					var mydata = {"data":myRates,"grayData":myGray,"type":"user","source":"web"};
 					var mystr = JSON.stringify(mydata);
 					$.ajax({  
 				        type: "GET",  
