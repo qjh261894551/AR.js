@@ -29,12 +29,10 @@ if(isset($_GET['data'])){
 	$mydata = $data->data;
 	$grayData=$data->grayData;
 	$location=$data->location;
+	$source=$data->source;
 	$result['result'] = 'error';
 	$result['code']="0";//初始化
-	
-	
 	//1.type为stuff
-	
 	//2.type为user
 	//测试例子1:{"data":[0.3,0.3,0.3,1.1,0.1,0.4,0.4,1,0.4,0.4,0.3,1.2,0.4,0.4,0.3,1.2],"type":"user","location":{"lng":123,"lat":321},"title":"abc","url":"www.baidu.com"}
 	//返回结果：{"result": "fail","code": 3}
@@ -55,14 +53,14 @@ if(isset($_GET['data'])){
 	$result=array();
 	switch ($data->type) {
 		case 'stuff':
-			$result=saveStuffImgInfo($mydata,$location,$data->title,$data->url,$grayData);
+			$result=saveStuffImgInfo($mydata,$location,$data->title,$data->url,$grayData,$source);
 			$result=json_encode($result,JSON_UNESCAPED_UNICODE);
 			exit($result);
 			break;
 		case 'user':
 		for($i=0;$i<$length;$i++){
 			if(!isset($result['success'])){
-			$result=getSimilarImgInfo($mydata,$location,$grayData,$DVALUE,$MGL,$BR,$RGB);
+			$result=getSimilarImgInfo($mydata,$location,$grayData,$DVALUE,$MGL,$BR,$RGB,$source);
 			$MGL+=1;
 			$DVALUE+=0.1;
 			$BR+=0.05;
@@ -74,6 +72,9 @@ if(isset($_GET['data'])){
 			break;
 		default:
 			$result['code']="1";//传入类型不明
+			$result['type']=$data->type;
+			$result['data']=$mydata;
+			$result['all']=$_GET['data'];
 			$result=json_encode($result,JSON_UNESCAPED_UNICODE);
 			exit($result);
 			break;
@@ -84,7 +85,7 @@ if(isset($_GET['data'])){
 	$result=json_encode($result,JSON_UNESCAPED_UNICODE);
 	exit($result);
 }
-function saveStuffImgInfo($data,$location,$title,$url,$grayData)//$data数组由16个数字构成，$location为GPS经纬度，
+function saveStuffImgInfo($data,$location,$title,$url,$grayData,$source)//$data数组由16个数字构成，$location为GPS经纬度，
 	{
 		$good = pdo_fetch('SELECT id FROM ' . tablename('mcar_goods') . ' WHERE title=:title and url=:url ', array(':title' => $title, ':url' => $url));
 		if (empty($good)) {
@@ -119,6 +120,7 @@ function saveStuffImgInfo($data,$location,$title,$url,$grayData)//$data数组由
 
 		$imgInfoData['maxGrayLevel']=$grayData[0];
 		$imgInfoData['binaRate']=$grayData[1];
+		$imgInfoData['source']=$source;
 		$result = pdo_insert('mcar_goods_imgInfo', $imgInfoData);
 		if ($result) {
 			$re['result']="success";
@@ -131,7 +133,7 @@ function saveStuffImgInfo($data,$location,$title,$url,$grayData)//$data数组由
 		}
 	}
 
-function getSimilarImgInfo($data,$location,$grayData,$DVALUE,$MGL,$BR,$RGB)//$data由16个数字构成，$location为GPS经纬度，$grayData灰度相关值
+function getSimilarImgInfo($data,$location,$grayData,$DVALUE,$MGL,$BR,$RGB,$source)//$data由16个数字构成，$location为GPS经纬度，$grayData灰度相关值
 	{
 		
 		//location gps暂时空 todo
@@ -143,10 +145,10 @@ function getSimilarImgInfo($data,$location,$grayData,$DVALUE,$MGL,$BR,$RGB)//$da
 		
 		 //$desition=" and abs(redRate1-data1=:data1)<0.1 and abs(greenRate1-data2=:data2)<0.1 and abs(blueRate1-data3=:data3)<0.1 and abs(rgbRate1-data4=:data4)<0.2 and abs(redRate2-data5=:data5)<0.1 and abs(greenRate2-data6=:data6)<0.1 and abs(blueRate2-data7=:data7)<0.1 and abs(rgbRate2-data8=:data8)<0.2 and abs(redRate3-data9=:data9)<0.1 and abs(greenRate3-data10=:data10)<0.1 and abs(blueRate3-data11=:data11)<0.1 and abs(rgbRate3-data12:data12)<0.2 and abs(redRate-data13=:data13)<0.1 and abs(greenRate-data14=:data14)<0.1 and abs(blueRate-data15=:data15)<0.1 and abs(rgbRate-data16=:data16)<0.2";
 		 $desition=" and abs(maxGrayLevel-".$grayData[0].")<".$MGL." and abs(binaRate-".$grayData[1].")<".$BR."";
-		 $desition .=" and abs(redRate1-".$data[0].")<".$DVALUE." and abs(greenRate1-".$data[1].")<".$DVALUE." and abs(blueRate1-".$data[2].")<".$DVALUE." and abs(rgbRate1-".$data[3].")<".$RGB." and abs(redRate2-".$data[4].")<".$DVALUE." and abs(greenRate2-".$data[5].")<".$DVALUE." and abs(blueRate2-".$data[6].")<".$DVALUE."  and abs(rgbRate2-".$data[7].")<".$RGB." and abs(redRate3-".$data[8].")<".$DVALUE."  and abs(greenRate3-".$data[9].")<".$DVALUE." and abs(blueRate3-".$data[10].")<".$DVALUE." and abs(rgbRate3-".$data[11].")<".$RGB." and abs(redRate-".$data[12].")<".$DVALUE." and abs(greenRate-".$data[13].")<".$DVALUE." and abs(blueRate-".$data[14].")<".$DVALUE." and abs(rgbRate-".$data[15].")<".$RGB."";
+		 $desition .=" and abs(redRate1-".$data[0].")<".$DVALUE." and abs(greenRate1-".$data[1].")<".$DVALUE." and abs(blueRate1-".$data[2].")<".$DVALUE." and abs(rgbRate1-".$data[3].")<".$RGB." and abs(redRate2-".$data[4].")<".$DVALUE." and abs(greenRate2-".$data[5].")<".$DVALUE." and abs(blueRate2-".$data[6].")<".$DVALUE."  and abs(rgbRate2-".$data[7].")<".$RGB." and abs(redRate3-".$data[8].")<".$DVALUE."  and abs(greenRate3-".$data[9].")<".$DVALUE." and abs(blueRate3-".$data[10].")<".$DVALUE." and abs(rgbRate3-".$data[11].")<".$RGB." and abs(redRate-".$data[12].")<".$DVALUE." and abs(greenRate-".$data[13].")<".$DVALUE." and abs(blueRate-".$data[14].")<".$DVALUE." and abs(rgbRate-".$data[15].")<".$RGB." and source=:source ";
 		 $desition2="(abs(redRate1-".$data[0].")+abs(greenRate1-".$data[1].")+abs(blueRate1-".$data[2].")+abs(rgbRate1-".$data[3].")+abs(redRate2-".$data[4].")+abs(greenRate2-".$data[5].")+abs(blueRate2-".$data[6].")+abs(rgbRate2-".$data[7].")+abs(redRate3-".$data[8].")+abs(greenRate3-".$data[9].")+abs(blueRate3-".$data[10].")+abs(rgbRate3-".$data[11].")+abs(redRate-".$data[12].")+abs(greenRate-".$data[13].")+abs(blueRate-".$data[14].")+abs(rgbRate-".$data[15].")+abs(maxGrayLevel-".$grayData[0].")+abs(binaRate-".$grayData[1]."))";
 		 //$desition2="(abs(redRate1-".$data[0]."))";
-		$fetch=pdo_fetch("SELECT goodsid,".$desition2." as desition FROM".tablename('mcar_goods_imgInfo')."WHERE 1".$desition."ORDER BY desition ASC limit 1");
+		$fetch=pdo_fetch("SELECT goodsid,".$desition2." as desition FROM".tablename('mcar_goods_imgInfo')."WHERE  1".$desition."ORDER BY desition ASC limit 1",array(':source'=>$source));
 
 		//$fetchall=pdo_fetchall("SELECT goodsid FROM".tablename('mcar_goods_imgInfo')."WHERE 1".$desition."ORDER BY ");
 
