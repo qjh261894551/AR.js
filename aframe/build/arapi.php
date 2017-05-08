@@ -22,6 +22,24 @@
 
 require_once './../framework/bootstrap.inc.php';
 
+$key='abc';//约定key
+if(isset($_GET['match'])){
+	if($_GET['match']!=$key){
+	$result=array('result'=>'unmatchkey','code'=>1);
+	exit(json_encode($result,JSON_UNESCAPED_UNICODE));
+	}else{
+	$result=array('result'=>'match','code'=>1);
+	exit(json_encode($result,JSON_UNESCAPED_UNICODE));
+	}
+}
+if(isset($_GET['geturl'])){
+		$data=$_GET['geturl'];
+
+		$title=trim($data->title);
+		$url=getgoodurl($title);
+		$result=array('url'=>$url);
+		exit(json_encode($result,JSON_UNESCAPED_UNICODE));
+}
 
 if(isset($_GET['data'])){
 	$data = $_GET['data'];
@@ -34,6 +52,7 @@ if(isset($_GET['data'])){
 	$result['code']="0";//初始化
 	//1.type为stuff
 	//2.type为user
+	//3.
 	//测试例子1:{"data":[0.3,0.3,0.3,1.1,0.1,0.4,0.4,1,0.4,0.4,0.3,1.2,0.4,0.4,0.3,1.2],"type":"user","location":{"lng":123,"lat":321},"title":"abc","url":"www.baidu.com"}
 	//返回结果：{"result": "fail","code": 3}
 	//测试例子2：{"data":[0.3,0.3,0.3,0.98,0.18,0.49,0.45,1.14,0.6,0.61,0.61,1.8,0.51,0.4,0.45,1.4],"type":"user","location":{"lng":123,"lat":321},"title":"abc","url":"www.baidu.com"}
@@ -50,6 +69,10 @@ if(isset($_GET['data'])){
 	$BR=0.05;//binaRate 差值
 	$RGB=0.2;//合色差值
 	$length=3;
+
+
+
+
 	$result=array();
 	switch ($data->type) {
 		case 'stuff':
@@ -78,13 +101,33 @@ if(isset($_GET['data'])){
 			$result=json_encode($result,JSON_UNESCAPED_UNICODE);
 			exit($result);
 			break;
+	
+
 	}
+
+
+
 }else{
 	$result['result']='error';
 	$result['code']=0;
 	$result=json_encode($result,JSON_UNESCAPED_UNICODE);
 	exit($result);
 }
+
+
+function getgoodurl($title){
+	$staticurl='http://memorecool.cn/app/index.php?i=2&c=entry&m=ewei_shopv2&do=mobile&r=goods.detail&';
+	//$result=pdo_fetchall("SELECT id FROM".tablename('ewei_shop_goods')."WHERE title=:title",array(':title'=>'%'.$title.'%'));
+	
+	if(empty($result)){
+		// $ins=pdo_insert('ewei_shop_goods',array('title'=>$title));
+		// $id=pdo_insertid();
+		$id=36;
+	}else $id=$result['id'];
+	$staticurl .= 'id='.$id;
+	return $staticurl;
+}
+
 function saveStuffImgInfo($data,$location,$title,$url,$grayData,$source)//$data数组由16个数字构成，$location为GPS经纬度，
 	{
 		$good = pdo_fetch('SELECT id FROM ' . tablename('mcar_goods') . ' WHERE title=:title and url=:url ', array(':title' => $title, ':url' => $url));
