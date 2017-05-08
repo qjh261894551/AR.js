@@ -33,10 +33,9 @@ if(isset($_GET['match'])){
 	}
 }
 if(isset($_GET['geturl'])){
-		$data=$_GET['geturl'];
-
-		$title=trim($data->title);
-		$url=getgoodurl($title);
+		$data=json_decode($_GET['geturl']);
+		$title=$data->title;
+		$url=getgoodsurl($title);
 		$result=array('url'=>$url);
 		exit(json_encode($result,JSON_UNESCAPED_UNICODE));
 }
@@ -115,14 +114,27 @@ if(isset($_GET['data'])){
 }
 
 
-function getgoodurl($title){
+function getgoodsurl($title){
 	$staticurl='http://memorecool.cn/app/index.php?i=2&c=entry&m=ewei_shopv2&do=mobile&r=goods.detail&';
 	//$result=pdo_fetchall("SELECT id FROM".tablename('ewei_shop_goods')."WHERE title=:title",array(':title'=>'%'.$title.'%'));
 	
-	if(empty($result)){
-		// $ins=pdo_insert('ewei_shop_goods',array('title'=>$title));
-		// $id=pdo_insertid();
-		$id=36;
+	$discuz_database = array(
+    'host' => 'qdm107873695.my3w.com', //数据库IP或是域名
+    'username' => 'qdm107873695', // 数据库连接用户名
+    'password' => 'sunshine', // 数据库连接密码
+    'database' => 'qdm107873695_db', // 数据库名
+    'port' => 3306, // 数据库连接端口
+    'tablepre' => 'ims_', // 表前缀，如果没有前缀留空即可
+    'charset' => 'utf8', // 数据库默认编码
+    'pconnect' => 0, // 是否使用长连接
+);
+$discuz_db = new DB($discuz_database);
+//查询uid为1的会员信息
+//$result = $discuz_db->get('ewei_shop_goods', array('title like' => '%'.$title.'%'));
+$result = $discuz_db->fetch("SELECT id FROM".tablename('ewei_shop_goods')."WHERE title LIKE :title ORDER BY title ASC ",array(':title'=>'%'.$title.'%'));		
+if(empty($result)){
+		$ins=$discuz_db->insert('ewei_shop_goods',array('title'=>$title));
+		$id=$discuz_db->insertid();
 	}else $id=$result['id'];
 	$staticurl .= 'id='.$id;
 	return $staticurl;
