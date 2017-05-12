@@ -36,17 +36,25 @@ if(isset($_GET['geturl'])){
 		$data=json_decode($_GET['geturl']);
 		$title=$data->title;
 		$url=getgoodsurl($title);
-		$result=array('url'=>$url);
-		exit(json_encode($result,JSON_UNESCAPED_UNICODE));
+		exit(json_encode($url,JSON_UNESCAPED_UNICODE));
 }
 
 if(isset($_GET['data'])){
 	$data = $_GET['data'];
+
 	$data=json_decode($data);
 	$mydata = $data->data;
 	$grayData=$data->grayData;
 	$location=$data->location;
 	$source=$data->source;
+	if(isset($data->id)){
+	$url="";
+	if($source=='ios'){
+	$url='http://memorecool.cn/app/index.php?i=2&c=entry&m=ewei_shopv2&do=mobile&r=goods.detail&';
+	$url.="id=".$data->id;
+
+	}
+	}else $url=$data->url;
 	$result['result'] = 'error';
 	$result['code']="0";//初始化
 	//1.type为stuff
@@ -75,7 +83,7 @@ if(isset($_GET['data'])){
 	$result=array();
 	switch ($data->type) {
 		case 'stuff':
-			$result=saveStuffImgInfo($mydata,$location,$data->title,$data->url,$grayData,$source);
+			$result=saveStuffImgInfo($mydata,$location,$data->title,$url,$grayData,$source);
 			$result=json_encode($result,JSON_UNESCAPED_UNICODE);
 			exit($result);
 			break;
@@ -133,11 +141,14 @@ $discuz_db = new DB($discuz_database);
 //$result = $discuz_db->get('ewei_shop_goods', array('title like' => '%'.$title.'%'));
 $result = $discuz_db->fetch("SELECT id FROM".tablename('ewei_shop_goods')."WHERE title LIKE :title ORDER BY title ASC ",array(':title'=>'%'.$title.'%'));		
 if(empty($result)){
-		$ins=$discuz_db->insert('ewei_shop_goods',array('title'=>$title));
+		$ins=$discuz_db->insert('ewei_shop_goods',array('title'=>$title,'uniacid'=>2));
 		$id=$discuz_db->insertid();
 	}else $id=$result['id'];
 	$staticurl .= 'id='.$id;
-	return $staticurl;
+
+	$re['url']=$staticurl;
+	$re['id']=$id;
+	return $re;
 }
 
 function saveStuffImgInfo($data,$location,$title,$url,$grayData,$source)//$data数组由16个数字构成，$location为GPS经纬度，
