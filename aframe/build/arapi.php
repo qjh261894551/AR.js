@@ -71,11 +71,11 @@ if(isset($_GET['data'])){
 	
 	//4.非正常访问(无数据请求)
 	//结果：{"result": "error","code": 0}
-	$DVALUE=0.1;//分色差值
-	$MGL=3;//灰度等级差值
+	$DVALUE=0.05;//分色差值
+	$MGL=2;//灰度等级差值
 	$BR=0.05;//binaRate 差值
-	$RGB=0.2;//合色差值
-	$length=3;
+	$RGB=0.1;//合色差值
+	$length=10;
 
 
 
@@ -91,11 +91,11 @@ if(isset($_GET['data'])){
 		for($i=0;$i<$length;$i++){
 			if(!isset($result['success'])){
 			$result=getSimilarImgInfo($mydata,$location,$grayData,$DVALUE,$MGL,$BR,$RGB,$source);
-			$MGL+=1;
-			$DVALUE+=0.1;
-			$BR+=0.05;
-			$RGB+=0.1;
-			}else return;
+			$DVALUE+=0.01;
+			$MGL+=0.1;
+			$BR+=0.01;
+			$RGB+=0.01;
+			}else break;
 		}
 			$result=json_encode($result,JSON_UNESCAPED_UNICODE);
 			exit($result);
@@ -227,6 +227,7 @@ function getSimilarImgInfo($data,$location,$grayData,$DVALUE,$MGL,$BR,$RGB,$sour
 		}else {
 			$goods=pdo_fetch("SELECT * FROM".tablename('mcar_goods')." WHERE id=:id",array(':id'=> $fetch['goodsid']));
 			$result['result'] = 'success';
+			$result['success'] = 'true';
 			$result['title'] = $goods['title'];		
 			$result['url'] = $goods['url'];
 			return $result;
