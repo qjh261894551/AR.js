@@ -139,7 +139,7 @@ function getgoodsurl($title){
 $discuz_db = new DB($discuz_database);
 //查询uid为1的会员信息
 //$result = $discuz_db->get('ewei_shop_goods', array('title like' => '%'.$title.'%'));
-$result = $discuz_db->fetch("SELECT id FROM".tablename('ewei_shop_goods')."WHERE title LIKE :title ORDER BY title ASC ",array(':title'=>'%'.$title.'%'));		
+$result = $discuz_db->fetch("SELECT id FROM".tablename('ewei_shop_goods')."WHERE title LIKE :title ORDER BY title ASC ",array(':title'=>$title));		
 if(empty($result)){
 		$ins=$discuz_db->insert('ewei_shop_goods',array('title'=>$title,'uniacid'=>2));
 		$id=$discuz_db->insertid();
