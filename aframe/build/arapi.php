@@ -44,6 +44,7 @@ if(isset($_GET['data'])){
 
 	$data=json_decode($data);
 	$mydata = $data->data;
+	$hashData = $data->hashData;
 	$grayData=$data->grayData;
 	$location=$data->location;
 	$source=$data->source;
@@ -71,10 +72,10 @@ if(isset($_GET['data'])){
 	
 	//4.非正常访问(无数据请求)
 	//结果：{"result": "error","code": 0}
-	$DVALUE=0.03;//分色差值
-	$MGL=1;//灰度等级差值
-	$BR=0.04;//binaRate 差值
-	$RGB=0.1;//合色差值
+	$DVALUE=0.1;//分色差值
+	$MGL=2;//灰度等级差值
+	$BR=0.06;//binaRate 差值
+	$RGB=0.2;//合色差值
 	$length=5;
 
 
@@ -83,14 +84,14 @@ if(isset($_GET['data'])){
 	$result=array();
 	switch ($data->type) {
 		case 'stuff':
-			$result=saveStuffImgInfo($mydata,$location,$data->title,$url,$grayData,$source);
+			$result=saveStuffImgInfo($hashData,$mydata,$location,$data->title,$url,$grayData,$source);
 			$result=json_encode($result,JSON_UNESCAPED_UNICODE);
 			exit($result);
 			break;
 		case 'user':
 		for($i=0;$i<$length;$i++){
 			if(!isset($result['success'])){
-			$result=getSimilarImgInfo($mydata,$location,$grayData,$DVALUE,$MGL,$BR,$RGB,$source);
+			$result=getSimilarImgInfo($hashData,$mydata,$location,$grayData,$DVALUE,$MGL,$BR,$RGB,$source);
 			$DVALUE+=0.01;
 			$MGL+=0.2;
 			$BR+=0.01;
@@ -151,7 +152,7 @@ if(empty($result)){
 	return $re;
 }
 
-function saveStuffImgInfo($data,$location,$title,$url,$grayData,$source)//$data数组由16个数字构成，$location为GPS经纬度，
+function saveStuffImgInfo($hashData,$data,$location,$title,$url,$grayData,$source)//$data数组由16个数字构成，$location为GPS经纬度，
 	{
 		$good = pdo_fetch('SELECT id FROM ' . tablename('mcar_goods') . ' WHERE title=:title and url=:url ', array(':title' => $title, ':url' => $url));
 		if (empty($good)) {
@@ -163,6 +164,75 @@ function saveStuffImgInfo($data,$location,$title,$url,$grayData,$source)//$data�
 			$id = $good['id'];
 		}
 		$imgInfoData['goodsid'] = $id;
+		if (!empty($hashData)) {
+			$imgInfoData['hashData0'] = $hashData[0];
+			$imgInfoData['hashData1'] = $hashData[1];
+			$imgInfoData['hashData2'] = $hashData[2];
+			$imgInfoData['hashData3'] = $hashData[3];
+			$imgInfoData['hashData4'] = $hashData[4];
+			$imgInfoData['hashData5'] = $hashData[5];
+			$imgInfoData['hashData6'] = $hashData[6];
+			$imgInfoData['hashData7'] = $hashData[7];
+			$imgInfoData['hashData8'] = $hashData[8];
+			$imgInfoData['hashData9'] = $hashData[9];
+			$imgInfoData['hashData10'] = $hashData[10];
+			$imgInfoData['hashData11'] = $hashData[11];
+			$imgInfoData['hashData12'] = $hashData[12];
+			$imgInfoData['hashData13'] = $hashData[13];
+			$imgInfoData['hashData14'] = $hashData[14];
+			$imgInfoData['hashData15'] = $hashData[15];
+			$imgInfoData['hashData16'] = $hashData[16];
+			$imgInfoData['hashData17'] = $hashData[17];
+			$imgInfoData['hashData18'] = $hashData[18];
+			$imgInfoData['hashData19'] = $hashData[19];
+			$imgInfoData['hashData20'] = $hashData[20];
+			$imgInfoData['hashData21'] = $hashData[21];
+			$imgInfoData['hashData22'] = $hashData[22];
+			$imgInfoData['hashData23'] = $hashData[23];
+			$imgInfoData['hashData24'] = $hashData[24];
+			$imgInfoData['hashData25'] = $hashData[25];
+			$imgInfoData['hashData26'] = $hashData[26];
+			$imgInfoData['hashData27'] = $hashData[27];
+			$imgInfoData['hashData28'] = $hashData[28];
+			$imgInfoData['hashData29'] = $hashData[29];
+			$imgInfoData['hashData30'] = $hashData[30];
+			$imgInfoData['hashData31'] = $hashData[31];
+			$imgInfoData['hashData32'] = $hashData[32];
+			$imgInfoData['hashData33'] = $hashData[33];
+			$imgInfoData['hashData34'] = $hashData[34];
+			$imgInfoData['hashData35'] = $hashData[35];
+			$imgInfoData['hashData36'] = $hashData[36];
+			$imgInfoData['hashData37'] = $hashData[37];
+			$imgInfoData['hashData38'] = $hashData[38];
+			$imgInfoData['hashData39'] = $hashData[39];
+			$imgInfoData['hashData40'] = $hashData[40];
+			$imgInfoData['hashData41'] = $hashData[41];
+			$imgInfoData['hashData42'] = $hashData[42];
+			$imgInfoData['hashData43'] = $hashData[43];
+			$imgInfoData['hashData44'] = $hashData[44];
+			$imgInfoData['hashData45'] = $hashData[45];
+			$imgInfoData['hashData46'] = $hashData[46];
+			$imgInfoData['hashData47'] = $hashData[47];
+			$imgInfoData['hashData48'] = $hashData[48];
+			$imgInfoData['hashData49'] = $hashData[49];
+			$imgInfoData['hashData50'] = $hashData[50];
+			$imgInfoData['hashData51'] = $hashData[51];
+			$imgInfoData['hashData52'] = $hashData[52];
+			$imgInfoData['hashData53'] = $hashData[53];
+			$imgInfoData['hashData54'] = $hashData[54];
+			$imgInfoData['hashData55'] = $hashData[55];
+			$imgInfoData['hashData56'] = $hashData[56];
+			$imgInfoData['hashData57'] = $hashData[57];
+			$imgInfoData['hashData58'] = $hashData[58];
+			$imgInfoData['hashData59'] = $hashData[59];
+			$imgInfoData['hashData60'] = $hashData[60];
+			$imgInfoData['hashData61'] = $hashData[61];
+			$imgInfoData['hashData62'] = $hashData[62];
+			$imgInfoData['hashData63'] = $hashData[63];
+		}
+		
+
+
 
 		$imgInfoData['redRate1'] = $data[0];
 		$imgInfoData['greenRate1'] = $data[1];
@@ -199,7 +269,7 @@ function saveStuffImgInfo($data,$location,$title,$url,$grayData,$source)//$data�
 		}
 	}
 
-function getSimilarImgInfo($data,$location,$grayData,$DVALUE,$MGL,$BR,$RGB,$source)//$data由16个数字构成，$location为GPS经纬度，$grayData灰度相关值
+function getSimilarImgInfo($hashData,$data,$location,$grayData,$DVALUE,$MGL,$BR,$RGB,$source)//$data由16个数字构成，$location为GPS经纬度，$grayData灰度相关值
 	{
 		
 		//location gps暂时空 todo
@@ -210,11 +280,23 @@ function getSimilarImgInfo($data,$location,$grayData,$DVALUE,$MGL,$BR,$RGB,$sour
 		//var_dump($data[0]);
 		
 		 //$desition=" and abs(redRate1-data1=:data1)<0.1 and abs(greenRate1-data2=:data2)<0.1 and abs(blueRate1-data3=:data3)<0.1 and abs(rgbRate1-data4=:data4)<0.2 and abs(redRate2-data5=:data5)<0.1 and abs(greenRate2-data6=:data6)<0.1 and abs(blueRate2-data7=:data7)<0.1 and abs(rgbRate2-data8=:data8)<0.2 and abs(redRate3-data9=:data9)<0.1 and abs(greenRate3-data10=:data10)<0.1 and abs(blueRate3-data11=:data11)<0.1 and abs(rgbRate3-data12:data12)<0.2 and abs(redRate-data13=:data13)<0.1 and abs(greenRate-data14=:data14)<0.1 and abs(blueRate-data15=:data15)<0.1 and abs(rgbRate-data16=:data16)<0.2";
-		 $desition=" and abs(maxGrayLevel-".$grayData[0].")<".$MGL." and abs(binaRate-".$grayData[1].")<".$BR."";
-		 $desition .=" and abs(redRate1-".$data[0].")<".$DVALUE." and abs(greenRate1-".$data[1].")<".$DVALUE." and abs(blueRate1-".$data[2].")<".$DVALUE." and abs(rgbRate1-".$data[3].")<".$RGB." and abs(redRate2-".$data[4].")<".$DVALUE." and abs(greenRate2-".$data[5].")<".$DVALUE." and abs(blueRate2-".$data[6].")<".$DVALUE."  and abs(rgbRate2-".$data[7].")<".$RGB." and abs(redRate3-".$data[8].")<".$DVALUE."  and abs(greenRate3-".$data[9].")<".$DVALUE." and abs(blueRate3-".$data[10].")<".$DVALUE." and abs(rgbRate3-".$data[11].")<".$RGB." and abs(redRate-".$data[12].")<".$DVALUE." and abs(greenRate-".$data[13].")<".$DVALUE." and abs(blueRate-".$data[14].")<".$DVALUE." and abs(rgbRate-".$data[15].")<".$RGB." and source=:source ";
-		 $desition2="(abs(redRate1-".$data[0].")+abs(greenRate1-".$data[1].")+abs(blueRate1-".$data[2].")+abs(rgbRate1-".$data[3].")+abs(redRate2-".$data[4].")+abs(greenRate2-".$data[5].")+abs(blueRate2-".$data[6].")+abs(rgbRate2-".$data[7].")+abs(redRate3-".$data[8].")+abs(greenRate3-".$data[9].")+abs(blueRate3-".$data[10].")+abs(rgbRate3-".$data[11].")+abs(redRate-".$data[12].")+abs(greenRate-".$data[13].")+abs(blueRate-".$data[14].")+abs(rgbRate-".$data[15].")+abs(maxGrayLevel-".$grayData[0].")+abs(binaRate-".$grayData[1]."))";
+		if (!empty($hashData)) {
+			$desition=" and abs(maxGrayLevel-".$grayData[0].")<".$MGL." and abs(binaRate-".$grayData[1].")<".$BR."";
+			$desition .=" and abs(redRate1-".$data[0].")<".$DVALUE." and abs(greenRate1-".$data[1].")<".$DVALUE." and abs(blueRate1-".$data[2].")<".$DVALUE." and abs(rgbRate1-".$data[3].")<".$RGB." and abs(redRate2-".$data[4].")<".$DVALUE." and abs(greenRate2-".$data[5].")<".$DVALUE." and abs(blueRate2-".$data[6].")<".$DVALUE."  and abs(rgbRate2-".$data[7].")<".$RGB." and abs(redRate3-".$data[8].")<".$DVALUE."  and abs(greenRate3-".$data[9].")<".$DVALUE." and abs(blueRate3-".$data[10].")<".$DVALUE." and abs(rgbRate3-".$data[11].")<".$RGB." and abs(redRate-".$data[12].")<".$DVALUE." and abs(greenRate-".$data[13].")<".$DVALUE." and abs(blueRate-".$data[14].")<".$DVALUE." and abs(rgbRate-".$data[15].")<".$RGB." and source=:source ";
+			$desition2="(abs(redRate1-".$data[0].")+abs(greenRate1-".$data[1].")+abs(blueRate1-".$data[2].")+abs(rgbRate1-".$data[3].")+abs(redRate2-".$data[4].")+abs(greenRate2-".$data[5].")+abs(blueRate2-".$data[6].")+abs(rgbRate2-".$data[7].")+abs(redRate3-".$data[8].")+abs(greenRate3-".$data[9].")+abs(blueRate3-".$data[10].")+abs(rgbRate3-".$data[11].")+abs(redRate-".$data[12].")+abs(greenRate-".$data[13].")+abs(blueRate-".$data[14].")+abs(rgbRate-".$data[15].")+abs(maxGrayLevel-".$grayData[0].")+abs(binaRate-".$grayData[1]."))";
+
+			$hashLevel="(abs(hashData0-".$hashData[0].")+abs(hashData1-".$hashData[1].")+abs(hashData2-".$hashData[2].")+abs(hashData3-".$hashData[3].")+abs(hashData4-".$hashData[4].")+abs(hashData5-".$hashData[5].")+abs(hashData6-".$hashData[6].")+abs(hashData7-".$hashData[7].")+abs(hashData8-".$hashData[8].")+abs(hashData9-".$hashData[9].")+abs(hashData10-".$hashData[10].")+abs(hashData11-".$hashData[11].")+abs(hashData12-".$hashData[12].")+abs(hashData13-".$hashData[13].")+abs(hashData14-".$hashData[14].")+abs(hashData15-".$hashData[15].")+abs(hashData16-".$hashData[16].")+abs(hashData17-".$hashData[17].")+abs(hashData18-".$hashData[18].")+abs(hashData19-".$hashData[19].")+abs(hashData20-".$hashData[20].")+abs(hashData21-".$hashData[21].")+abs(hashData22-".$hashData[22].")+abs(hashData23-".$hashData[23].")+abs(hashData24-".$hashData[24].")+abs(hashData25-".$hashData[25].")+abs(hashData26-".$hashData[26].")+abs(hashData27-".$hashData[27].")+abs(hashData28-".$hashData[28].")+abs(hashData29-".$hashData[29].")+abs(hashData30-".$hashData[30].")+abs(hashData31-".$hashData[31].")+abs(hashData32-".$hashData[32].")+abs(hashData33-".$hashData[33].")+abs(hashData34-".$hashData[34].")+abs(hashData35-".$hashData[35].")+abs(hashData36-".$hashData[36].")+abs(hashData37-".$hashData[37].")+abs(hashData38-".$hashData[38].")+abs(hashData39-".$hashData[39].")+abs(hashData40-".$hashData[40].")+abs(hashData41-".$hashData[41].")+abs(hashData42-".$hashData[42].")+abs(hashData43-".$hashData[43].")+abs(hashData44-".$hashData[44].")+abs(hashData45-".$hashData[45].")+abs(hashData46-".$hashData[46].")+abs(hashData47-".$hashData[47].")+abs(hashData48-".$hashData[48].")+abs(hashData49-".$hashData[49].")+abs(hashData50-".$hashData[50].")+abs(hashData51-".$hashData[51].")+abs(hashData52-".$hashData[52].")+abs(hashData53-".$hashData[53].")+abs(hashData54-".$hashData[54].")+abs(hashData55-".$hashData[55].")+abs(hashData56-".$hashData[56].")+abs(hashData57-".$hashData[57].")+abs(hashData58-".$hashData[58].")+abs(hashData59-".$hashData[59].")+abs(hashData60-".$hashData[60].")+abs(hashData61-".$hashData[61].")+abs(hashData62-".$hashData[62].")+abs(hashData63-".$hashData[63]."))"
 		 //$desition2="(abs(redRate1-".$data[0]."))";
-		$fetch=pdo_fetch("SELECT goodsid,".$desition2." as desition FROM".tablename('mcar_goods_imgInfo')."WHERE  1".$desition."ORDER BY desition ASC limit 1",array(':source'=>$source));
+			// $fetch=pdo_fetch("SELECT goodsid,".$hashLevel." as hashLevel FROM".tablename('mcar_goods_imgInfo')."WHERE  hashLevel < 10  and source=:source ORDER BY hashLevel ASC limit 1",array(':source'=>$source));
+
+			// $fetch=pdo_fetch("SELECT goodsid,".$desition2." as desition,".$hashLevel." as hashLevel FROM".tablename('mcar_goods_imgInfo')."WHERE  1".$desition." and hashLevel < 10"." ORDER BY hashLevel ASC limit 1",array(':source'=>$source));
+		}else{
+			$desition=" and abs(maxGrayLevel-".$grayData[0].")<".$MGL." and abs(binaRate-".$grayData[1].")<".$BR."";
+			$desition .=" and abs(redRate1-".$data[0].")<".$DVALUE." and abs(greenRate1-".$data[1].")<".$DVALUE." and abs(blueRate1-".$data[2].")<".$DVALUE." and abs(rgbRate1-".$data[3].")<".$RGB." and abs(redRate2-".$data[4].")<".$DVALUE." and abs(greenRate2-".$data[5].")<".$DVALUE." and abs(blueRate2-".$data[6].")<".$DVALUE."  and abs(rgbRate2-".$data[7].")<".$RGB." and abs(redRate3-".$data[8].")<".$DVALUE."  and abs(greenRate3-".$data[9].")<".$DVALUE." and abs(blueRate3-".$data[10].")<".$DVALUE." and abs(rgbRate3-".$data[11].")<".$RGB." and abs(redRate-".$data[12].")<".$DVALUE." and abs(greenRate-".$data[13].")<".$DVALUE." and abs(blueRate-".$data[14].")<".$DVALUE." and abs(rgbRate-".$data[15].")<".$RGB." and source=:source ";
+			$desition2="(abs(redRate1-".$data[0].")+abs(greenRate1-".$data[1].")+abs(blueRate1-".$data[2].")+abs(rgbRate1-".$data[3].")+abs(redRate2-".$data[4].")+abs(greenRate2-".$data[5].")+abs(blueRate2-".$data[6].")+abs(rgbRate2-".$data[7].")+abs(redRate3-".$data[8].")+abs(greenRate3-".$data[9].")+abs(blueRate3-".$data[10].")+abs(rgbRate3-".$data[11].")+abs(redRate-".$data[12].")+abs(greenRate-".$data[13].")+abs(blueRate-".$data[14].")+abs(rgbRate-".$data[15].")+abs(maxGrayLevel-".$grayData[0].")+abs(binaRate-".$grayData[1]."))";
+		 //$desition2="(abs(redRate1-".$data[0]."))";
+			$fetch=pdo_fetch("SELECT goodsid,".$desition2." as desition FROM".tablename('mcar_goods_imgInfo')."WHERE  1".$desition."ORDER BY desition ASC limit 1",array(':source'=>$source));
+		}
 
 		//$fetchall=pdo_fetchall("SELECT goodsid FROM".tablename('mcar_goods_imgInfo')."WHERE 1".$desition."ORDER BY ");
 
