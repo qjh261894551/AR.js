@@ -71,11 +71,11 @@ if(isset($_GET['data'])){
 	
 	//4.非正常访问(无数据请求)
 	//结果：{"result": "error","code": 0}
-	$DVALUE=0.05;//分色差值
-	$MGL=2;//灰度等级差值
-	$BR=0.05;//binaRate 差值
+	$DVALUE=0.03;//分色差值
+	$MGL=1;//灰度等级差值
+	$BR=0.04;//binaRate 差值
 	$RGB=0.1;//合色差值
-	$length=10;
+	$length=5;
 
 
 
@@ -92,7 +92,7 @@ if(isset($_GET['data'])){
 			if(!isset($result['success'])){
 			$result=getSimilarImgInfo($mydata,$location,$grayData,$DVALUE,$MGL,$BR,$RGB,$source);
 			$DVALUE+=0.01;
-			$MGL+=0.1;
+			$MGL+=0.2;
 			$BR+=0.01;
 			$RGB+=0.01;
 			}else break;
