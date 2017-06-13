@@ -87,7 +87,7 @@ if(isset($_GET['data'])){
 	$RGB=0.1;//合色差值
 	// $hashDD=7;//hashData差值
 	// $histogramDD=15;//histogramDD差值
-	$length=6;
+	$length=5;
 
 
 
@@ -236,7 +236,7 @@ function getSimilarImgInfo($histogram32Str,$hashData,$data,$location,$grayData,$
 		if (!empty($hashData)) {//hashData和histogram32Str一起存在或不存在
 
 			$levehashData="levenshtein('".$hashData."',hashData) as levehashData,"."levenshtein('".$histogram32Str."',histogram32Str) as levehistogram32Str ";
-			$desition=" and levenshtein('".$hashData."',hashData)<8 and levenshtein('".$histogram32Str."',histogram32Str)<9 and abs(maxGrayLevel-".$grayData[0].")<".$MGL." and abs(binaRate-".$grayData[1].")<".$BR."";
+			$desition=" and levenshtein('".$hashData."',hashData)<7 and levenshtein('".$histogram32Str."',histogram32Str)<7 and abs(maxGrayLevel-".$grayData[0].")<".$MGL." and abs(binaRate-".$grayData[1].")<".$BR."";
 			$desition .=" and abs(redRate1-".$data[0].")<".$DVALUE." and abs(greenRate1-".$data[1].")<".$DVALUE." and abs(blueRate1-".$data[2].")<".$DVALUE." and abs(rgbRate1-".$data[3].")<".$RGB." and abs(redRate2-".$data[4].")<".$DVALUE." and abs(greenRate2-".$data[5].")<".$DVALUE." and abs(blueRate2-".$data[6].")<".$DVALUE."  and abs(rgbRate2-".$data[7].")<".$RGB." and abs(redRate3-".$data[8].")<".$DVALUE."  and abs(greenRate3-".$data[9].")<".$DVALUE." and abs(blueRate3-".$data[10].")<".$DVALUE." and abs(rgbRate3-".$data[11].")<".$RGB." and abs(redRate-".$data[12].")<".$DVALUE." and abs(greenRate-".$data[13].")<".$DVALUE." and abs(blueRate-".$data[14].")<".$DVALUE." and abs(rgbRate-".$data[15].")<".$RGB." and source=:source ";
 			$desition2="(abs(redRate1-".$data[0].")+abs(greenRate1-".$data[1].")+abs(blueRate1-".$data[2].")+abs(rgbRate1-".$data[3].")+abs(redRate2-".$data[4].")+abs(greenRate2-".$data[5].")+abs(blueRate2-".$data[6].")+abs(rgbRate2-".$data[7].")+abs(redRate3-".$data[8].")+abs(greenRate3-".$data[9].")+abs(blueRate3-".$data[10].")+abs(rgbRate3-".$data[11].")+abs(redRate-".$data[12].")+abs(greenRate-".$data[13].")+abs(blueRate-".$data[14].")+abs(rgbRate-".$data[15].")+abs(maxGrayLevel-".$grayData[0].")+abs(binaRate-".$grayData[1]."))";
 		 //$desition2="(abs(redRate1-".$data[0]."))";
