@@ -85,10 +85,20 @@ if(isset($_GET['data'])){
 	$MGL=1;//灰度等级差值
 	$BR=0.04;//binaRate 差值
 	$RGB=0.1;//合色差值
-	// $hashDD=7;//hashData差值
-	// $histogramDD=15;//histogramDD差值
+	$hashDD=7;//hashData差值
+	$histogramDD=7;//histogramDD差值
 	$length=5;
 
+	if($source=='android'){
+	$DVALUE=0.1;//分色差值
+	$MGL=1;//灰度等级差值
+	$BR=0.1;//binaRate 差值
+	$RGB=0.2;//合色差值
+	$hashDD=10;//hashData差值
+	$histogramDD=13;//histogramDD差值
+	$length=10;
+
+	}
 
 
 
@@ -102,7 +112,7 @@ if(isset($_GET['data'])){
 		case 'user':
 		for($i=0;$i<$length;$i++){
 			if(!isset($result['success'])){
-			$result=getSimilarImgInfo($histogram32Str,$hashData,$mydata,$location,$grayData,$DVALUE,$MGL,$BR,$RGB,$source);
+			$result=getSimilarImgInfo($histogram32Str,$hashData,$mydata,$location,$grayData,$DVALUE,$MGL,$BR,$hashDD,$histogramDD,$RGB,$source);
 			$DVALUE+=0.01;
 			$MGL+=0.2;
 			$BR+=0.01;
@@ -223,7 +233,7 @@ function saveStuffImgInfo($histogram32Str,$hashData,$data,$location,$title,$url,
 		}
 	}
 
-function getSimilarImgInfo($histogram32Str,$hashData,$data,$location,$grayData,$DVALUE,$MGL,$BR,$RGB,$source)//$data由16个数字构成，$location为GPS经纬度，$grayData灰度相关值
+function getSimilarImgInfo($histogram32Str,$hashData,$data,$location,$grayData,$DVALUE,$MGL,$BR,$hashDD,$histogramDD,$RGB,$source)//$data由16个数字构成，$location为GPS经纬度，$grayData灰度相关值
 	{	
 		//location gps暂时空 todo
 		//var_dump($data[3]);
@@ -236,11 +246,11 @@ function getSimilarImgInfo($histogram32Str,$hashData,$data,$location,$grayData,$
 		if (!empty($hashData)) {//hashData和histogram32Str一起存在或不存在
 
 			$levehashData="levenshtein('".$hashData."',hashData) as levehashData,"."levenshtein('".$histogram32Str."',histogram32Str) as levehistogram32Str ";
-			$desition=" and levenshtein('".$hashData."',hashData)<7 and levenshtein('".$histogram32Str."',histogram32Str)<7 and abs(maxGrayLevel-".$grayData[0].")<".$MGL." and abs(binaRate-".$grayData[1].")<".$BR."";
+			$desition=" and levenshtein('".$hashData."',hashData)<".$hashDD." and levenshtein('".$histogram32Str."',histogram32Str)<".$histogramDD." and abs(maxGrayLevel-".$grayData[0].")<".$MGL." and abs(binaRate-".$grayData[1].")<".$BR."";
 			$desition .=" and abs(redRate1-".$data[0].")<".$DVALUE." and abs(greenRate1-".$data[1].")<".$DVALUE." and abs(blueRate1-".$data[2].")<".$DVALUE." and abs(rgbRate1-".$data[3].")<".$RGB." and abs(redRate2-".$data[4].")<".$DVALUE." and abs(greenRate2-".$data[5].")<".$DVALUE." and abs(blueRate2-".$data[6].")<".$DVALUE."  and abs(rgbRate2-".$data[7].")<".$RGB." and abs(redRate3-".$data[8].")<".$DVALUE."  and abs(greenRate3-".$data[9].")<".$DVALUE." and abs(blueRate3-".$data[10].")<".$DVALUE." and abs(rgbRate3-".$data[11].")<".$RGB." and abs(redRate-".$data[12].")<".$DVALUE." and abs(greenRate-".$data[13].")<".$DVALUE." and abs(blueRate-".$data[14].")<".$DVALUE." and abs(rgbRate-".$data[15].")<".$RGB." and source=:source ";
-			$desition2="(abs(redRate1-".$data[0].")+abs(greenRate1-".$data[1].")+abs(blueRate1-".$data[2].")+abs(rgbRate1-".$data[3].")+abs(redRate2-".$data[4].")+abs(greenRate2-".$data[5].")+abs(blueRate2-".$data[6].")+abs(rgbRate2-".$data[7].")+abs(redRate3-".$data[8].")+abs(greenRate3-".$data[9].")+abs(blueRate3-".$data[10].")+abs(rgbRate3-".$data[11].")+abs(redRate-".$data[12].")+abs(greenRate-".$data[13].")+abs(blueRate-".$data[14].")+abs(rgbRate-".$data[15].")+abs(maxGrayLevel-".$grayData[0].")+abs(binaRate-".$grayData[1]."))";
+			$desition2="levenshtein('".$hashData."',hashData)+levenshtein('".$histogram32Str."',histogram32Str)+(abs(redRate1-".$data[0].")+abs(greenRate1-".$data[1].")+abs(blueRate1-".$data[2].")+abs(rgbRate1-".$data[3].")+abs(redRate2-".$data[4].")+abs(greenRate2-".$data[5].")+abs(blueRate2-".$data[6].")+abs(rgbRate2-".$data[7].")+abs(redRate3-".$data[8].")+abs(greenRate3-".$data[9].")+abs(blueRate3-".$data[10].")+abs(rgbRate3-".$data[11].")+abs(redRate-".$data[12].")+abs(greenRate-".$data[13].")+abs(blueRate-".$data[14].")+abs(rgbRate-".$data[15].")+abs(maxGrayLevel-".$grayData[0].")+abs(binaRate-".$grayData[1]."))";
 		 //$desition2="(abs(redRate1-".$data[0]."))";
-			$fetch=pdo_fetch("SELECT goodsid,".$desition2." as desition,".$levehashData." FROM".tablename('mcar_goods_imgInfo')."WHERE  1".$desition."ORDER BY levehashData ASC,levehistogram32Str ASC,desition ASC limit 1",array(':source'=>$source));
+			$fetch=pdo_fetch("SELECT goodsid,".$desition2." as desition,".$levehashData." FROM".tablename('mcar_goods_imgInfo')."WHERE  1".$desition."ORDER BY desition ASC,levehashData ASC,levehistogram32Str ASC limit 1",array(':source'=>$source));
 			
 		}else{
 			$desition=" and abs(maxGrayLevel-".$grayData[0].")<".$MGL." and abs(binaRate-".$grayData[1].")<".$BR."";
