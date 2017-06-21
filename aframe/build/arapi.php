@@ -103,6 +103,7 @@ if(isset($_GET['data'])){
 
 
 	$result=array();
+	$yesmcl = 1;//是否需要机器学习，1需要，0不需要
 	switch ($data->type) {
 		case 'stuff':
 			$result=saveStuffImgInfo($histogram32Str,$hashData,$mydata,$location,$data->title,$url,$grayData,$source,0);
@@ -112,12 +113,27 @@ if(isset($_GET['data'])){
 		case 'user':
 		for($i=0;$i<$length;$i++){
 			if(!isset($result['success'])){
-			$result=getSimilarImgInfo($histogram32Str,$hashData,$mydata,$location,$grayData,$DVALUE,$MGL,$BR,$hashDD,$histogramDD,$RGB,$source);
-			$DVALUE+=0.01;
-			$MGL+=0.2;
-			$BR+=0.01;
-			$RGB+=0.01;
+				if ($i >= $length-3) {
+					$yesmcl = 0;//是否需要机器学习，1需要，0不需要
+				}
+				$result=getSimilarImgInfo($histogram32Str,$hashData,$mydata,$location,$grayData,$DVALUE,$MGL,$BR,$hashDD,$histogramDD,$RGB,$source,$yesmcl);
+				$DVALUE+=0.01;
+				$MGL+=0.2;
+				$BR+=0.01;
+				$RGB+=0.01;
+				$hashDD+=0.2;
+				$histogramDD+=0.3;
 			}else break;
+			if ($i == $length-1 && $source=='android') {//最后一次仍无结果
+				$DVALUE=0.2;//分色差值
+				$MGL=5;//灰度等级差值
+				$BR=0.2;//binaRate 差值
+				$RGB=0.2;//合色差值
+				$hashDD=20;//hashData差值
+				$histogramDD=20;//histogramDD差值
+				$yesmcl = 0;//是否需要机器学习，1需要，0不需要
+				$result=getSimilarImgInfo($histogram32Str,$hashData,$mydata,$location,$grayData,$DVALUE,$MGL,$BR,$hashDD,$histogramDD,$RGB,$source,$yesmcl);
+			}
 		}
 			$result=json_encode($result,JSON_UNESCAPED_UNICODE);
 			exit($result);
@@ -221,6 +237,7 @@ function saveStuffImgInfo($histogram32Str,$hashData,$data,$location,$title,$url,
 		$imgInfoData['lat']=$location['lat'];
 		$imgInfoData['source']=$source;
 		$imgInfoData['mcl']=$mcl;
+		$imgInfoData['time']=time();
 		$result = pdo_insert('mcar_goods_imgInfo', $imgInfoData);
 		if ($result) {
 			$re['result']="success";
@@ -233,7 +250,7 @@ function saveStuffImgInfo($histogram32Str,$hashData,$data,$location,$title,$url,
 		}
 	}
 
-function getSimilarImgInfo($histogram32Str,$hashData,$data,$location,$grayData,$DVALUE,$MGL,$BR,$hashDD,$histogramDD,$RGB,$source)//$data由16个数字构成，$location为GPS经纬度，$grayData灰度相关值
+function getSimilarImgInfo($histogram32Str,$hashData,$data,$location,$grayData,$DVALUE,$MGL,$BR,$hashDD,$histogramDD,$RGB,$source,$yesmcl)//$data由16个数字构成，$location为GPS经纬度，$grayData灰度相关值
 	{	
 		//location gps暂时空 todo
 		//var_dump($data[3]);
@@ -277,7 +294,7 @@ function getSimilarImgInfo($histogram32Str,$hashData,$data,$location,$grayData,$
 			$result['title'] = $goods['title'];		
 			$result['url'] = $goods['url'];
 
-			if ($total<500) {
+			if ($total<500 && $yesmcl == 1) {
 				saveStuffImgInfo($histogram32Str,$hashData,$data,$location,$goods['title'],$goods['url'],$grayData,$source,1);
 			}
 			

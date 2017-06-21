@@ -2342,18 +2342,73 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			this.ctx.drawImage(image, 0, 0, this.canvas.width, this.canvas.height); // draw video
 		}
 
+
+
 		var imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
 		var data = imageData.data;//获取每帧的颜色信息
-		getColorInfo(data);
-		// if (mytest == 100) {
-		// 	getColorInfo(data);
-		// 	var mysrc = this.canvas.toDataURL('image/png');//得到截图BASE64文件
-		// 	// console.log(mysrc);
-		// 	var child=document.getElementById("mytestdiv");
-		// 	child.append("nihao");
-		// 	console.log(child);
-		// }
-		// mytest++;
+		var count = data.length/4;
+
+		var grayData = new Array(count);
+		var R = 0;
+		var G = 0;
+		var B = 0;
+		var Grey = 0;
+		for (var i=0; i<count; i++) {
+			R = data[i*4];
+			G = data[1+i*4];
+			B = data[2+i*4];
+			Grey = (R*38 + G*75 + B*15)>> 7;//拿到灰度值
+			grayData[i]=Grey;//获得一个灰度的矩阵
+		}
+
+		
+
+		//将灰度矩阵中所有角点打印出来，然后put进原图中
+		var pointsNum = 0;
+		for (var i=0; i<count; i++) {
+			var y = parseInt(i/this.canvas.width);
+			var x = parseInt(i-this.canvas.width*y);
+			if (x>15 && x<this.canvas.width-15 && y>15 && y<this.canvas.height-15) {//在可检查范围内
+				var isPoint = 0;
+				var DD = 50;
+				if (Math.abs(grayData[i]-grayData[i+15])<DD) {
+					isPoint++;
+				}
+				if (Math.abs(grayData[i]-grayData[i-15])<DD) {
+					isPoint++;
+				}
+				if (Math.abs(grayData[i]-grayData[i-15*this.canvas.width])<DD) {
+					isPoint++;
+				}
+				if (Math.abs(grayData[i]-grayData[i+15*this.canvas.width])<DD) {
+					isPoint++;
+				}
+				if (isPoint <= 1) {
+					pointsNum ++;
+					imageData.data[i*4] = 255;
+					imageData.data[1+i*4] = 255;
+				imageData.data[2+i*4] = 255;
+				}
+			}
+			
+			
+		}
+
+		var mycanvas = document.createElement("canvas");
+    	mycanvas.width = this.canvas.width;   
+    	mycanvas.height = this.canvas.height;
+		var myctx=mycanvas.getContext("2d");
+		myctx.putImageData(imageData,0, 0);
+		var mysrc = mycanvas.toDataURL('image/png');//得到截图BASE64文件
+		
+		// console.log(mysrc);
+		// getColorInfo(data);
+
+		
+		if (mytest == 30) {
+			$('.mytest').html("<img src = \""+mysrc+"\" style=\"display:block;width: 100%;height:100%;position:fixed;left:0;top:0;z-index:3;\"  />");
+		}
+		mytest++;
 		if (this.dataHeap) {
 			this.dataHeap.set( data );
 			return true;
@@ -2369,6 +2424,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 		var B = 0;
 		var Grey = 0;
 		var myGrey = 0;
+		var grayData = new Array(count);
 		var histogram = new Array(256);
 		var binaryzation = new Array(0,0);
 		var histogram32 = new Array(32);
@@ -2384,6 +2440,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			G = data[1+i*4];
 			B = data[2+i*4];
 			Grey = (R*38 + G*75 + B*15)>> 7;//拿到灰度值
+			grayData[i]=Grey;//获得一个灰度的矩阵
 			myGrey = parseInt(Grey/8);
 			histogram32[myGrey] = histogram32[myGrey]+1;
 
@@ -2398,6 +2455,8 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			}
 		}
 		
+		console.log(grayData);//打印出该灰度的矩阵
+
 		for (var i=0; i<histogram.length; i++) {
 			histogram[i] = histogram[i]/count;
 		}//计算出每级比例
@@ -2411,7 +2470,11 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 				maxpoi = i;
 			}
 			
-		}//得到32级的最大位置及最大值
+		}
+
+
+
+		//得到32级的最大位置及最大值
 		// for (var i=0; i<histogram32.length; i++) {
 		// 	histogram32[i] = histogram32[i]/count;
 		// }//计算出32级每级比例
