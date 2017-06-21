@@ -2370,24 +2370,24 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 			var x = parseInt(i-this.canvas.width*y);
 			if (x>15 && x<this.canvas.width-15 && y>15 && y<this.canvas.height-15) {//在可检查范围内
 				var isPoint = 0;
-				var DD = 50;
-				if (Math.abs(grayData[i]-grayData[i+15])<DD) {
+				var DD = 30;
+				if (Math.abs(grayData[i]-grayData[i+5])<DD) {
 					isPoint++;
 				}
-				if (Math.abs(grayData[i]-grayData[i-15])<DD) {
+				if (Math.abs(grayData[i]-grayData[i-5])<DD) {
 					isPoint++;
 				}
-				if (Math.abs(grayData[i]-grayData[i-15*this.canvas.width])<DD) {
+				if (Math.abs(grayData[i]-grayData[i-5*this.canvas.width])<DD) {
 					isPoint++;
 				}
-				if (Math.abs(grayData[i]-grayData[i+15*this.canvas.width])<DD) {
+				if (Math.abs(grayData[i]-grayData[i+5*this.canvas.width])<DD) {
 					isPoint++;
 				}
 				if (isPoint <= 1) {
 					pointsNum ++;
 					imageData.data[i*4] = 255;
 					imageData.data[1+i*4] = 255;
-				imageData.data[2+i*4] = 255;
+					imageData.data[2+i*4] = 255;
 				}
 			}
 			
