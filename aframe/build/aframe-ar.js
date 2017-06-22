@@ -2365,7 +2365,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 
 		//将灰度矩阵中所有角点打印出来，然后put进原图中
 		var pointsNum = 0;
-		for (var i=0; i<count; i++) {
+		for (var i=0; i<count; i=i+10) {
 			var y = parseInt(i/this.canvas.width);
 			var x = parseInt(i-this.canvas.width*y);
 			if (x>15 && x<this.canvas.width-15 && y>15 && y<this.canvas.height-15) {//在可检查范围内
@@ -2385,6 +2385,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 				}
 				if (isPoint <= 1) {
 					pointsNum ++;
+					console.log(pointsNum)
 					imageData.data[i*4] = 255;
 					imageData.data[1+i*4] = 255;
 					imageData.data[2+i*4] = 255;
@@ -2406,7 +2407,7 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
 
 		
 		if (mytest == 30) {
-			$('.mytest').html("<img src = \""+mysrc+"\" style=\"display:block;width: 100%;height:100%;position:fixed;left:0;top:0;z-index:3;\"  />");
+			$('body').append("<img src = \""+mysrc+"\" style=\"display:block;width: 100%;height:100%;position:fixed;left:0;top:0;z-index:3;\"  />");
 		}
 		mytest++;
 		if (this.dataHeap) {
