@@ -26,6 +26,7 @@ require_once './../framework/bootstrap.inc.php';
 // var_dump($fetch['levehistogram32Str']);
 // exit($fetch['levehistogram']);
 
+//update `ims_mcar_goods_imgInfo` set lat="29.788086139625",lng="121.57098026958" where source = 'android';//更新数据库记录 2017年7月28日
 $key='abc';//约定key
 if(isset($_GET['match'])){
 	if($_GET['match']!=$key){
@@ -262,19 +263,26 @@ function getSimilarImgInfo($histogram32Str,$hashData,$data,$location,$grayData,$
 		 //$desition=" and abs(redRate1-data1=:data1)<0.1 and abs(greenRate1-data2=:data2)<0.1 and abs(blueRate1-data3=:data3)<0.1 and abs(rgbRate1-data4=:data4)<0.2 and abs(redRate2-data5=:data5)<0.1 and abs(greenRate2-data6=:data6)<0.1 and abs(blueRate2-data7=:data7)<0.1 and abs(rgbRate2-data8=:data8)<0.2 and abs(redRate3-data9=:data9)<0.1 and abs(greenRate3-data10=:data10)<0.1 and abs(blueRate3-data11=:data11)<0.1 and abs(rgbRate3-data12:data12)<0.2 and abs(redRate-data13=:data13)<0.1 and abs(greenRate-data14=:data14)<0.1 and abs(blueRate-data15=:data15)<0.1 and abs(rgbRate-data16=:data16)<0.2";
 		if (!empty($hashData)) {//hashData和histogram32Str一起存在或不存在
 
+			//距离限制
+			//$distance = "(ROUND(6378.138*2*ASIN(SQRT(POW(SIN((".$location['lat']."*PI()/180-lat*PI()/180)/2),2)+COS(".$location['lat']."*PI()/180)*COS(lat*PI()/180)*POW(SIN((".$location['lng']."*PI()/180-lng*PI()/180)/2),2)))))";
+			$distance = "abs(".$location['lng']."-lng) <0.01 AND abs(".$location['lat']."-lat)<0.01";
+
 			$levehashData="levenshtein('".$hashData."',hashData) as levehashData,"."levenshtein('".$histogram32Str."',histogram32Str) as levehistogram32Str ";
 			$desition=" and levenshtein('".$hashData."',hashData)<".$hashDD." and levenshtein('".$histogram32Str."',histogram32Str)<".$histogramDD." and abs(maxGrayLevel-".$grayData[0].")<".$MGL." and abs(binaRate-".$grayData[1].")<".$BR."";
 			$desition .=" and abs(redRate1-".$data[0].")<".$DVALUE." and abs(greenRate1-".$data[1].")<".$DVALUE." and abs(blueRate1-".$data[2].")<".$DVALUE." and abs(rgbRate1-".$data[3].")<".$RGB." and abs(redRate2-".$data[4].")<".$DVALUE." and abs(greenRate2-".$data[5].")<".$DVALUE." and abs(blueRate2-".$data[6].")<".$DVALUE."  and abs(rgbRate2-".$data[7].")<".$RGB." and abs(redRate3-".$data[8].")<".$DVALUE."  and abs(greenRate3-".$data[9].")<".$DVALUE." and abs(blueRate3-".$data[10].")<".$DVALUE." and abs(rgbRate3-".$data[11].")<".$RGB." and abs(redRate-".$data[12].")<".$DVALUE." and abs(greenRate-".$data[13].")<".$DVALUE." and abs(blueRate-".$data[14].")<".$DVALUE." and abs(rgbRate-".$data[15].")<".$RGB." and source=:source ";
 			$desition2="levenshtein('".$hashData."',hashData)+levenshtein('".$histogram32Str."',histogram32Str)+(abs(redRate1-".$data[0].")+abs(greenRate1-".$data[1].")+abs(blueRate1-".$data[2].")+abs(rgbRate1-".$data[3].")+abs(redRate2-".$data[4].")+abs(greenRate2-".$data[5].")+abs(blueRate2-".$data[6].")+abs(rgbRate2-".$data[7].")+abs(redRate3-".$data[8].")+abs(greenRate3-".$data[9].")+abs(blueRate3-".$data[10].")+abs(rgbRate3-".$data[11].")+abs(redRate-".$data[12].")+abs(greenRate-".$data[13].")+abs(blueRate-".$data[14].")+abs(rgbRate-".$data[15].")+abs(maxGrayLevel-".$grayData[0].")+abs(binaRate-".$grayData[1]."))";
 		 //$desition2="(abs(redRate1-".$data[0]."))";
-			$fetch=pdo_fetch("SELECT goodsid,".$desition2." as desition,".$levehashData." FROM".tablename('mcar_goods_imgInfo')."WHERE  1".$desition."ORDER BY desition ASC,levehashData ASC,levehistogram32Str ASC limit 1",array(':source'=>$source));
+			$fetch=pdo_fetch("SELECT goodsid,".$desition2." as desition,".$levehashData." FROM".tablename('mcar_goods_imgInfo')."WHERE  1".$desition." AND ".$distance."  ORDER BY desition ASC,levehashData ASC,levehistogram32Str ASC limit 1",array(':source'=>$source));
 			
 		}else{
+			//$distance = "(ROUND(6378.138*2*ASIN(SQRT(POW(SIN((".$location['lat']."*PI()/180-lat*PI()/180)/2),2)+COS(".$location['lat']."*PI()/180)*COS(lat*PI()/180)*POW(SIN((".$location['lng']."*PI()/180-lng*PI()/180)/2),2)))))";
+			//距离限制
+			$distance = "abs(".$location['lng']."-lng) <0.01 AND abs(".$location['lat']."-lat)<0.01";
 			$desition=" and abs(maxGrayLevel-".$grayData[0].")<".$MGL." and abs(binaRate-".$grayData[1].")<".$BR."";
 			$desition .=" and abs(redRate1-".$data[0].")<".$DVALUE." and abs(greenRate1-".$data[1].")<".$DVALUE." and abs(blueRate1-".$data[2].")<".$DVALUE." and abs(rgbRate1-".$data[3].")<".$RGB." and abs(redRate2-".$data[4].")<".$DVALUE." and abs(greenRate2-".$data[5].")<".$DVALUE." and abs(blueRate2-".$data[6].")<".$DVALUE."  and abs(rgbRate2-".$data[7].")<".$RGB." and abs(redRate3-".$data[8].")<".$DVALUE."  and abs(greenRate3-".$data[9].")<".$DVALUE." and abs(blueRate3-".$data[10].")<".$DVALUE." and abs(rgbRate3-".$data[11].")<".$RGB." and abs(redRate-".$data[12].")<".$DVALUE." and abs(greenRate-".$data[13].")<".$DVALUE." and abs(blueRate-".$data[14].")<".$DVALUE." and abs(rgbRate-".$data[15].")<".$RGB." and source=:source ";
 			$desition2="(abs(redRate1-".$data[0].")+abs(greenRate1-".$data[1].")+abs(blueRate1-".$data[2].")+abs(rgbRate1-".$data[3].")+abs(redRate2-".$data[4].")+abs(greenRate2-".$data[5].")+abs(blueRate2-".$data[6].")+abs(rgbRate2-".$data[7].")+abs(redRate3-".$data[8].")+abs(greenRate3-".$data[9].")+abs(blueRate3-".$data[10].")+abs(rgbRate3-".$data[11].")+abs(redRate-".$data[12].")+abs(greenRate-".$data[13].")+abs(blueRate-".$data[14].")+abs(rgbRate-".$data[15].")+abs(maxGrayLevel-".$grayData[0].")+abs(binaRate-".$grayData[1]."))";
 		 //$desition2="(abs(redRate1-".$data[0]."))";
-			$fetch=pdo_fetch("SELECT goodsid,".$desition2." as desition FROM".tablename('mcar_goods_imgInfo')."WHERE  1".$desition."ORDER BY desition ASC limit 1",array(':source'=>$source));
+			$fetch=pdo_fetch("SELECT goodsid,".$desition2." as desition  FROM".tablename('mcar_goods_imgInfo')."WHERE  1".$desition." AND ".$distance." ORDER BY desition ASC limit 1",array(':source'=>$source));
 		}
 
 		//$fetchall=pdo_fetchall("SELECT goodsid FROM".tablename('mcar_goods_imgInfo')."WHERE 1".$desition."ORDER BY ");
