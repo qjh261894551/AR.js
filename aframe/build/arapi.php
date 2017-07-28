@@ -277,6 +277,7 @@ function getSimilarImgInfo($histogram32Str,$hashData,$data,$location,$grayData,$
 		}else{
 			//$distance = "(ROUND(6378.138*2*ASIN(SQRT(POW(SIN((".$location['lat']."*PI()/180-lat*PI()/180)/2),2)+COS(".$location['lat']."*PI()/180)*COS(lat*PI()/180)*POW(SIN((".$location['lng']."*PI()/180-lng*PI()/180)/2),2)))))";
 			//距离限制
+			
 			$distance = "abs(".$location['lng']."-lng) <0.01 AND abs(".$location['lat']."-lat)<0.01";
 			$desition=" and abs(maxGrayLevel-".$grayData[0].")<".$MGL." and abs(binaRate-".$grayData[1].")<".$BR."";
 			$desition .=" and abs(redRate1-".$data[0].")<".$DVALUE." and abs(greenRate1-".$data[1].")<".$DVALUE." and abs(blueRate1-".$data[2].")<".$DVALUE." and abs(rgbRate1-".$data[3].")<".$RGB." and abs(redRate2-".$data[4].")<".$DVALUE." and abs(greenRate2-".$data[5].")<".$DVALUE." and abs(blueRate2-".$data[6].")<".$DVALUE."  and abs(rgbRate2-".$data[7].")<".$RGB." and abs(redRate3-".$data[8].")<".$DVALUE."  and abs(greenRate3-".$data[9].")<".$DVALUE." and abs(blueRate3-".$data[10].")<".$DVALUE." and abs(rgbRate3-".$data[11].")<".$RGB." and abs(redRate-".$data[12].")<".$DVALUE." and abs(greenRate-".$data[13].")<".$DVALUE." and abs(blueRate-".$data[14].")<".$DVALUE." and abs(rgbRate-".$data[15].")<".$RGB." and source=:source ";
