@@ -3,7 +3,7 @@
  * 用于AR的api
  */
 /*测试地址
-* https://weixin.memorecool.cn/mcar/arapi.php
+* https://mctag.cn/mcar/aframe/build/arapi.php
 *
 * 请求方式：GET
 * 
@@ -20,7 +20,7 @@
 * 
 */
 
-require_once './../framework/bootstrap.inc.php';
+require_once '../../../framework/bootstrap.inc.php';
 // $mystr = "0000000000000000000000000102030303040607080807060607070604020000";
 // $fetch=pdo_fetch("SELECT levenshtein('0000000000000000000101000100000101010101000000000001000000000000','0000000000000000000000010001010101010000000000010100000000000000') as levehistogram32Str,levenshtein('1001111011111111111111111111111111000000111111111111111111111111','1001110011111111111111111111111110000100111111111111111111111111') as levehistogram FROM".tablename('mcar_goods_imgInfo')."WHERE  id = 1"." ORDER BY id ASC limit 1");
 // var_dump($fetch['levehistogram32Str']);
@@ -61,7 +61,7 @@ if(isset($_GET['data'])){
 	if(isset($data->id)){
 	$url="";
 	if($source=='ios'){
-	$url='http://memorecool.cn/app/index.php?i=2&c=entry&m=ewei_shopv2&do=mobile&r=goods.detail&';
+	$url='https://mctag.cn/app/index.php?i=2&c=entry&m=mc_salev2&do=mobile&r=goods.detail&';
 	$url.="id=".$data->id;
 
 	}
@@ -162,14 +162,14 @@ if(isset($_GET['data'])){
 
 
 function getgoodsurl($title){
-	$staticurl='http://memorecool.cn/app/index.php?i=2&c=entry&m=ewei_shopv2&do=mobile&r=goods.detail&';
+	$staticurl='http://mctag.cn/app/index.php?i=2&c=entry&m=mc_salev2&do=mobile&r=goods.detail&';
 	//$result=pdo_fetchall("SELECT id FROM".tablename('ewei_shop_goods')."WHERE title=:title",array(':title'=>'%'.$title.'%'));
 	
 	$discuz_database = array(
-    'host' => 'qdm107873695.my3w.com', //数据库IP或是域名
-    'username' => 'qdm107873695', // 数据库连接用户名
-    'password' => 'sunshine', // 数据库连接密码
-    'database' => 'qdm107873695_db', // 数据库名
+    'host' => 'localhost', //数据库IP或是域名
+    'username' => 'root', // 数据库连接用户名
+    'password' => 'mctag123', // 数据库连接密码
+    'database' => 'hltyshop', // 数据库名
     'port' => 3306, // 数据库连接端口
     'tablepre' => 'ims_', // 表前缀，如果没有前缀留空即可
     'charset' => 'utf8', // 数据库默认编码
@@ -178,9 +178,9 @@ function getgoodsurl($title){
 $discuz_db = new DB($discuz_database);
 //查询uid为1的会员信息
 //$result = $discuz_db->get('ewei_shop_goods', array('title like' => '%'.$title.'%'));
-$result = $discuz_db->fetch("SELECT id FROM".tablename('ewei_shop_goods')."WHERE title LIKE :title ORDER BY title ASC ",array(':title'=>$title));		
+$result = $discuz_db->fetch("SELECT id FROM".tablename('mc_sale_goods')."WHERE title LIKE :title ORDER BY title ASC ",array(':title'=>$title));		
 if(empty($result)){
-		$ins=$discuz_db->insert('ewei_shop_goods',array('title'=>$title,'uniacid'=>2));
+		$ins=$discuz_db->insert('mc_sale_goods',array('title'=>$title,'uniacid'=>2));
 		$id=$discuz_db->insertid();
 	}else $id=$result['id'];
 	$staticurl .= 'id='.$id;
